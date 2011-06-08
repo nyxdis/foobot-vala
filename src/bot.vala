@@ -102,5 +102,11 @@ class Bot : GLib.Object
 	public void parse(string line)
 	{
 		print(@"got line: $line\n");
+
+		if (line.has_prefix("PING :"))
+			send(@"PONG :$(line[6:line.length])");
+
+		// Update userlist on JOIN, NICK and WHO events
+		// Parse PRIVMSG
 	}
 }
