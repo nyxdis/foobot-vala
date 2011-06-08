@@ -47,7 +47,7 @@ class Bot : GLib.Object
 
 			// Read response
 			for (;;) {
-				var line = read();
+				var line = istream.read_line(null).strip();
 				if (@"001 $(Settings.nick) :" in line) {
 					log("Connected");
 					return true;
@@ -88,16 +88,19 @@ class Bot : GLib.Object
 		print("log: %s\n", msg);
 	}
 
-	private string read()
+	public async void wait()
 	{
-		string retval = "";
-
 		try {
-			retval = istream.read_line(null).strip();
+			var line = yield istream.read_line_async();
+			parse(line);
 		} catch (Error e) {
-			stderr.printf("%s\n", e.message);
+			warning("%s\n", e.message);
 		}
+		wait();
+	}
 
-		return retval;
+	public void parse(string line)
+	{
+		print(@"got line: $line\n");
 	}
 }

@@ -26,5 +26,6 @@ static void main()
 	if (bot.irc_connect())
 		bot.irc_post_connect();
 
+	bot.wait();
 	loop.run();
 }
