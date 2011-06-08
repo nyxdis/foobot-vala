@@ -1,0 +1,55 @@
+[foobot]
+
+# Public stuff, change this
+#command_char=!
+
+# The bots nick
+#nick=foobot
+
+# The bots username
+#username=foobot
+
+# The bots realname
+#realname=foobot
+
+# The server were connecting to, prefix with ssl:// for secure connections (FIXME)
+server=
+
+# Port of the server
+#port=6667
+
+# Network, important for the database
+#network=
+
+# Semicolon-separated list of channels to join
+# If the channel requires a key, you can use the following format:
+# #channel1 key, #channel2
+channels=#foobot
+
+# Authtentication settings
+# Password to use
+#authpass=
+# Login name
+#authnick=
+# The services nick, usually NickServ
+#authserv=NickServ
+# The command were supposed to use, usually identify or id
+#authcmd=id
+
+# Debug mode
+#debug_mode=false
+
+# Debug channel
+#debug_channel=#foobot2-debug
+
+# IP address to listen on (important for DCC)
+#listen_addr=
+
+# Port for DCC connections
+#dcc_port=3333
+
+# Main channel
+#main_channel=
+
+# Prevent the autoloading of some plugins (semicolon-separated)
+# plugin_blacklist=

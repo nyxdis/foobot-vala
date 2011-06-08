@@ -21,6 +21,8 @@ static void main()
 	var bot = new Bot();
 	var loop = new MainLoop();
 
+	Settings.load();
+
 	if (bot.irc_connect())
 		bot.irc_post_connect();
 

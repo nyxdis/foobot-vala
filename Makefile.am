@@ -4,6 +4,7 @@ VALAFLAGS = --pkg gio-2.0
 bin_PROGRAMS = foobot
 
 foobot_SOURCES = src/main.vala \
-		 src/bot.vala
+		 src/bot.vala \
+		 src/settings.vala
 
 foobot_LDADD = $(FOOBOT_LIBS)

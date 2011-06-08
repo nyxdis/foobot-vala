@@ -28,25 +28,27 @@ class Bot : GLib.Object
 		try {
 			// Resolve
 			var resolver = Resolver.get_default();
-			var addresses =	resolver.lookup_by_name("enyo.zakx.de");
+			var addresses =	resolver.lookup_by_name(Settings.server);
 			var address = addresses.nth_data(0);
 
 			// Connect
 			var client = new SocketClient();
 			var conn = client.connect (new
-					InetSocketAddress(address, 6667));
+					InetSocketAddress(address,
+						Settings.port));
 			this.istream = new DataInputStream(conn.input_stream);
 			this.ostream = new
 				DataOutputStream(conn.output_stream);
 
 			// Send user/nick
-			this.send(@"USER hi +i * :hi");
-			this.send(@"NICK hi");
+			this.send(@"USER $(Settings.username) +i * "
+					+ @":$(Settings.realname)");
+			this.send(@"NICK $(Settings.nick)");
 
 			// Read response
 			for (;;) {
 				var line = this.read();
-				if (@"001 hi :" in line) {
+				if (@"001 $(Settings.nick) :" in line) {
 					this.log("Connected");
 					return true;
 				}
