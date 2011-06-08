@@ -23,7 +23,7 @@ class Bot : GLib.Object
 
 	public bool irc_connect()
 	{
-		this.log("Connecting");
+		log("Connecting");
 
 		try {
 			// Resolve
@@ -36,20 +36,20 @@ class Bot : GLib.Object
 			var conn = client.connect (new
 					InetSocketAddress(address,
 						Settings.port));
-			this.istream = new DataInputStream(conn.input_stream);
-			this.ostream = new
+			istream = new DataInputStream(conn.input_stream);
+			ostream = new
 				DataOutputStream(conn.output_stream);
 
 			// Send user/nick
-			this.send(@"USER $(Settings.username) +i * "
+			send(@"USER $(Settings.username) +i * "
 					+ @":$(Settings.realname)");
-			this.send(@"NICK $(Settings.nick)");
+			send(@"NICK $(Settings.nick)");
 
 			// Read response
 			for (;;) {
-				var line = this.read();
+				var line = read();
 				if (@"001 $(Settings.nick) :" in line) {
-					this.log("Connected");
+					log("Connected");
 					return true;
 				}
 			}
@@ -65,19 +65,19 @@ class Bot : GLib.Object
 		// TODO auth
 		// TODO join debug channel
 		// TODO join all channels
-		this.join("#foobot");
+		join("#foobot");
 	}
 
 	public void join(string channel, string key = "")
 	{
-		this.send(@"JOIN $channel :$key");
-		this.send(@"WHO $channel");
+		send(@"JOIN $channel :$key");
+		send(@"WHO $channel");
 	}
 
 	public void send(string raw)
 	{
 		try {
-			this.ostream.put_string(@"$raw\n");
+			ostream.put_string(@"$raw\n");
 		} catch (Error e) {
 			stderr.printf("%s\n", e.message);
 		}
