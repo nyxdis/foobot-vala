@@ -26,7 +26,6 @@ class User
 	public string nick { get; private set; }
 	public string ident { get; private set; }
 	public string host { get; private set; }
-	public string realname { get; private set; }
 	public string title { get; private set; }
 	private HashTable<string,string> userdata;
 
