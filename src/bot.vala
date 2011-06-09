@@ -111,13 +111,24 @@ class Bot : GLib.Object
 
 		// Update userlist on JOIN, NICK and WHO events
 		try {
-			if (new Regex(@"^:[^ ]+ 352 $(Settings.nick) [^ ]+ (?<ident>[^ ]+) (?<host>[^ ]+) [^ ]+ (?<nick>[^ ]+) [^ ]+ :[0-9]+((?<realname>.+))?").match(line, 0, out match_info) ||
-					new Regex("^:(?<nick>.+)!(?<ident>.+)@(?<host>.+) JOIN :(?<channel>[^ ]+)").match(line, 0, out match_info) ||
-					new Regex("^:(?<oldnick>[^ ]+)!(?<ident>[^ ]+)@(?<host>[^ ]+) NICK :(?<nick>[^ ]+)").match(line, 0, out match_info)) {
-				// put user in userlist
-				// check realname (WHO)
-				// check oldnick (NICK)
-				// check channel (JOIN)
+			if (new Regex(@"^:[^ ]+ (?<cmd>352) $(Settings.nick) [^ ]+ (?<ident>[^ ]+) (?<host>[^ ]+) [^ ]+ (?<nick>[^ ]+) [^ ]+ :").match(line, 0, out match_info) ||
+					new Regex("^:(?<nick>.+)!(?<ident>.+)@(?<host>.+) (?<cmd>JOIN) :(?<channel>[^ ]+)").match(line, 0, out match_info) ||
+					new Regex("^:(?<oldnick>[^ ]+)!(?<ident>[^ ]+)@(?<host>[^ ]+) (?<cmd>NICK) :(?<nick>[^ ]+)").match(line, 0, out match_info)) {
+				var nick = match_info.fetch_named("nick");
+				var ident = match_info.fetch_named("ident");
+				var host = match_info.fetch_named("host");
+
+				userlist.insert(nick, new User(nick, ident, host));
+
+				if (match_info.fetch_named("cmd") == "NICK") {
+					userlist.remove(match_info.fetch_named("oldnick"));
+				} else if (match_info.fetch_named("cmd") == "JOIN") {
+					string[] args = {
+						match_info.fetch_named("channel"),
+						match_info.fetch_named("nick")
+							};
+					// TODO plugins::run_event("join", NULL, args);
+				}
 			}
 		} catch (Error e) {
 			warning("%s\n", e.message);
