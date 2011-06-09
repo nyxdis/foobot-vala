@@ -158,8 +158,21 @@ class Bot : GLib.Object
 						channel == nick ||
 						(text.length > Settings.nick.length + 2 &&
 						 text[0:(Settings.nick.length + 2)] == @"$(Settings.nick): ")) {
-					// this is a command
-					print(@"got command: $text\n");
+					if (text.ascii_ncasecmp(@"$(Settings.nick): ", Settings.nick.length + 2) == 0)
+						text = text.substring(Settings.nick.length + 2);
+
+					if (text.ascii_ncasecmp(Settings.command_char, Settings.command_char.length) == 0)
+						text = text.substring(Settings.command_char.length);
+
+					if (text.length > 0) {
+						var args = text.split(" ");
+						var cmd = args[0];
+						args = args[1:args.length];
+						// TODO plugins::run_event("command", cmd, args);
+						// TODO alias
+						// TODO forward query
+						print(@"got command: $cmd\n");
+					}
 				}
 				// TODO plugins::run_event("text", text);
 			}
