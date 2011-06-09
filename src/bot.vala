@@ -101,12 +101,34 @@ class Bot : GLib.Object
 
 	public void parse(string line)
 	{
+		MatchInfo match_info;
+
 		print(@"got line: $line\n");
 
 		if (line.has_prefix("PING :"))
 			send(@"PONG :$(line[6:line.length])");
 
 		// Update userlist on JOIN, NICK and WHO events
+		try {
+			if (new Regex(@"^:[^ ]+ 352 $(Settings.nick) [^ ]+ (?<ident>[^ ]+) (?<host>[^ ]+) [^ ]+ (?<nick>[^ ]+) [^ ]+ :[0-9]+((?<realname>.+))?").match(line, 0, out match_info) ||
+					new Regex("^:(?<nick>.+)!(?<ident>.+)@(?<host>.+) JOIN :(?<channel>[^ ]+)").match(line, 0, out match_info) ||
+					new Regex("^:(?<oldnick>[^ ]+)!(?<ident>[^ ]+)@(?<host>[^ ]+) NICK :(?<nick>[^ ]+)").match(line, 0, out match_info)) {
+				// put user in userlist
+				// check realname (WHO)
+				// check oldnick (NICK)
+				// check channel (JOIN)
+			}
+		} catch (Error e) {
+			warning("%s\n", e.message);
+		}
+
 		// Parse PRIVMSG
+		try {
+			if (new Regex(":(?<nick>[^ ]+)!(?<ident>[^ ]+)@(?<host>[^ ]+) PRIVMSG (?<target>[^ ]+) :(?<text>.+)").match(line, 0, out match_info)) {
+
+			}
+		} catch (Error e) {
+			warning("%s\n", e.message);
+		}
 	}
 }
