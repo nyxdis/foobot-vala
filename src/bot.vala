@@ -21,6 +21,13 @@ class Bot : GLib.Object
 	private DataInputStream istream;
 	private DataOutputStream ostream;
 	private HashTable<string,User> userlist;
+	public string channel { get; private set; }
+	public User usr { get; private set; }
+
+	public Bot()
+	{
+		userlist = new HashTable<string,User>(str_hash, str_equal);
+	}
 
 	public bool irc_connect()
 	{
@@ -104,8 +111,6 @@ class Bot : GLib.Object
 	{
 		MatchInfo match_info;
 
-		print(@"got line: $line\n");
-
 		if (line.has_prefix("PING :"))
 			send(@"PONG :$(line[6:line.length])");
 
@@ -137,7 +142,26 @@ class Bot : GLib.Object
 		// Parse PRIVMSG
 		try {
 			if (new Regex(":(?<nick>[^ ]+)!(?<ident>[^ ]+)@(?<host>[^ ]+) PRIVMSG (?<target>[^ ]+) :(?<text>.+)").match(line, 0, out match_info)) {
+				var nick = match_info.fetch_named("nick");
+				usr = userlist.lookup(nick);
+				var target = match_info.fetch_named("target");
+				var text = match_info.fetch_named("text");
 
+				// Set channel to the origin's nick if the
+				// PRIVMSG was sent directly to the bot
+				if (target == Settings.nick)
+					channel = nick;
+				else
+					channel = target;
+
+				if (text[0:Settings.command_char.length] == Settings.command_char ||
+						channel == nick ||
+						(text.length > Settings.nick.length + 2 &&
+						 text[0:(Settings.nick.length + 2)] == @"$(Settings.nick): ")) {
+					// this is a command
+					print(@"got command: $text\n");
+				}
+				// TODO plugins::run_event("text", text);
 			}
 		} catch (Error e) {
 			warning("%s\n", e.message);
