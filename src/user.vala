@@ -30,7 +30,7 @@ class User
 	public string title { get; private set; }
 	private HashTable<string,string> userdata;
 
-	public User()
+	public User(string nick, string ident, string host)
 	{
 		// db lookup
 	}
