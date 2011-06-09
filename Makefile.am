@@ -5,6 +5,7 @@ bin_PROGRAMS = foobot
 
 foobot_SOURCES = src/main.vala \
 		 src/bot.vala \
+		 src/user.vala \
 		 src/settings.vala
 
 foobot_LDADD = $(FOOBOT_LIBS)

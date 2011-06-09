@@ -20,6 +20,7 @@ class Bot : GLib.Object
 {
 	private DataInputStream istream;
 	private DataOutputStream ostream;
+	private HashTable<string,User> userlist;
 
 	public bool irc_connect()
 	{
