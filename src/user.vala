@@ -18,7 +18,7 @@
 
 using GLib;
 
-class User
+class User : Object
 {
 	public int id { get; private set; }
 	public string name { get; private set; }
@@ -34,12 +34,12 @@ class User
 		// db lookup
 	}
 
-	string get(string index)
+	public new string get(string index)
 	{
 		return userdata.lookup(index);
 	}
 
-	void set(string index, string item)
+	public new void set(string index, string item)
 	{
 		userdata.insert(index, item);
 	}

@@ -19,7 +19,7 @@
 using GLib;
 using Sqlite;
 
-class Foodb
+class Foodb : Object
 {
 	private Database db;
 

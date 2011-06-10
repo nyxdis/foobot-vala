@@ -18,7 +18,7 @@
 
 using GLib;
 
-class Settings
+class Settings : Object
 {
 	private static KeyFile config;
 

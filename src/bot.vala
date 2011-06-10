@@ -16,7 +16,9 @@
  */
 
 
-class Bot : GLib.Object
+using GLib;
+
+class Bot : Object
 {
 	private DataInputStream istream;
 	private DataOutputStream ostream;
