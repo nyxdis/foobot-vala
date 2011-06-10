@@ -1,10 +1,9 @@
-AM_CPPFLAGS = $(FOOBOT_CFLAGS)
-VALAFLAGS = --pkg gio-2.0 \
-	    --pkg sqlite3 \
-	    --pkg config \
-	    --vapidir vapi
+SUBDIRS = . plugins
 
-DEFS += -DPLUGINSDIR=\"$(libdir)/foobot\"
+ACLOCAL_AMFLAGS = -I m4
+AM_CPPFLAGS = $(FOOBOT_CFLAGS)
+
+DEFS += -DPLUGINSDIR=\"$(plugindir)\"
 
 bin_PROGRAMS = foobot
 
@@ -12,6 +11,7 @@ foobot_SOURCES = src/main.vala \
 		 src/bot.vala \
 		 src/foodb.vala \
 		 src/user.vala \
-		 src/settings.vala
+		 src/settings.vala \
+		 plugins/plugin-interface.vala
 
 foobot_LDADD = $(FOOBOT_LIBS)
