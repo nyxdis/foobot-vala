@@ -17,8 +17,9 @@
 
 
 using GLib;
+using Config;
 
-public class PluginRegistrar<T> : Object
+public class PluginLoader<T> : Object
 {
 	public string path { get; private set; }
 
@@ -27,9 +28,9 @@ public class PluginRegistrar<T> : Object
 
 	private delegate Type RegisterPluginFunction(Module module);
 
-	public PluginRegistrar(string name)
+	public PluginLoader(string name)
 	{
-		assert(Module.supported());
+		assert (Module.supported());
 		path = Module.build_path(PLUGINDIR, name);
 	}
 
@@ -45,7 +46,7 @@ public class PluginRegistrar<T> : Object
 
 		stdout.printf("Loaded module: %s\n", module.name());
 
-		void *function;
+		void* function;
 		module.symbol("register_plugin", out function);
 		RegisterPluginFunction register_plugin = (RegisterPluginFunction) function;
 		type = register_plugin(module);
@@ -60,4 +61,17 @@ public class PluginRegistrar<T> : Object
 
 class Plugins : Object
 {
+	private static List<PluginInterface> loaded;
+
+	public static bool load(string name)
+	{
+		var registrar = new PluginLoader<PluginInterface>(name);
+		if (!registrar.load())
+			return false;
+
+		var plugin = registrar.new_object();
+		plugin.init();
+		loaded.append(plugin);
+		return true;
+	}
 }
