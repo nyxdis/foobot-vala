@@ -16,12 +16,27 @@
  */
 
 
-static int main()
-{
-	var bot = new Bot();
-	var loop = new MainLoop();
+private string config = null;
+private const OptionEntry[] options = {
+	{ "config-file", 'f', 0, OptionArg.FILENAME, ref config, "Path to an alternative configuration file", null },
+	{ null }
+};
 
-	if (!Settings.load())
+public int main(string[] args)
+{
+	var loop = new MainLoop();
+	var context = new OptionContext("");
+	var bot = new Bot();
+
+	context.set_help_enabled(true);
+	context.add_main_entries(options, null);
+	try {
+		context.parse(ref args);
+	} catch (Error e) {
+		error("Failed to parse options: %s", e.message);
+	}
+
+	if (!Settings.load(config))
 		return 1;
 
 	if (bot.irc_connect())

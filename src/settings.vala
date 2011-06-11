@@ -41,9 +41,12 @@ class Settings : Object
 	public static uint16 dcc_port { get; private set; }
 	public static string[] plugin_blacklist { get; private set; }
 
-	public static bool load(string file = "foobot.conf")
+	public static bool load(string? file)
 	{
 		config = new KeyFile();
+
+		if (file == null)
+			file = "foobot.conf";
 
 		try {
 			config.load_from_file(file, KeyFileFlags.NONE);
