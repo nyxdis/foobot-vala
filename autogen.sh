@@ -8,5 +8,5 @@ autoheader || exit -1
 automake --add-missing --copy || exit -1
 
 if [ -z "${NOCONFIGURE}" ]; then
-	./configure
+	./configure "$@"
 fi
