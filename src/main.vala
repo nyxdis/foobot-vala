@@ -16,16 +16,19 @@
  */
 
 
-static void main()
+static int main()
 {
 	var bot = new Bot();
 	var loop = new MainLoop();
 
-	Settings.load();
+	if (!Settings.load())
+		return 1;
 
 	if (bot.irc_connect())
 		bot.irc_post_connect();
 
 	bot.wait();
 	loop.run();
+
+	return 0;
 }

@@ -41,13 +41,18 @@ class Settings : Object
 	public static uint16 dcc_port { get; private set; }
 	public static string[] plugin_blacklist { get; private set; }
 
-	public static void load(string file = "foobot.conf")
+	public static bool load(string file = "foobot.conf")
 	{
 		config = new KeyFile();
 
 		try {
 			config.load_from_file(file, KeyFileFlags.NONE);
+		} catch (Error e) {
+			critical("Failed to load configuration file: %s\n", e.message);
+			return false;
+		}
 
+		try {
 			command_char = get_string_if_exists("command_char") ?? "!";
 			nick = get_string_if_exists("nick") ?? "foobot";
 			username = get_string_if_exists("username") ?? "foobot";
@@ -87,7 +92,10 @@ class Settings : Object
 						"plugin_blacklist");
 		} catch (Error e) {
 			warning("%s\n", e.message);
+			return false;
 		}
+
+		return true;
 	}
 
 	private static string? get_string_if_exists(string key)
