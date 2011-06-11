@@ -4,6 +4,7 @@
 *.o
 *.stamp
 .deps
+.dirstamp
 .libs
 Makefile
 Makefile.in
