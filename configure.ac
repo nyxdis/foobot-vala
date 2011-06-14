@@ -12,8 +12,6 @@ AC_PATH_PROG(VALAC, valac, valac)
 AC_SUBST(VALAC)
 
 plugindir="${libdir}/foobot"
-AH_TEMPLATE([PLUGINDIR], [Directory where the plugins are])
-AC_DEFINE_UNQUOTED([PLUGINDIR], "$plugindir")
 AC_SUBST(plugindir)
 
 GLIB_REQUIRED=2.12.0

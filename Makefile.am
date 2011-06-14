@@ -3,7 +3,7 @@ SUBDIRS = . plugins
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = $(FOOBOT_CFLAGS)
 
-DEFS += -DPLUGINSDIR=\"$(plugindir)\"
+DEFS += -DPLUGINDIR=\"$(plugindir)\"
 
 bin_PROGRAMS = foobot
 
