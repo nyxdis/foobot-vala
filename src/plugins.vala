@@ -74,4 +74,19 @@ class Plugins : Object
 		loaded.append(plugin);
 		return true;
 	}
+
+	public static void run_joined(string channel, string nick)
+	{
+		print(@"signal: $nick joined $channel\n");
+	}
+
+	public static void run_said(string channel, string nick, string text)
+	{
+		print(@"signal: $nick said '$text' in $channel\n");
+	}
+
+	public static void run_command(string channel, string nick, string cmd, string[] args)
+	{
+		print(@"signal: $nick executed $cmd in $channel\n");
+	}
 }

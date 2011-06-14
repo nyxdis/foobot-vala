@@ -23,13 +23,21 @@ class Bot : Object
 	private DataInputStream istream;
 	private DataOutputStream ostream;
 	private HashTable<string,User> userlist;
-	public string channel { get; private set; }
 	public User usr { get; private set; }
 
 	public Bot()
 	{
 		userlist = new HashTable<string,User>(str_hash, str_equal);
 	}
+
+	// emitted when a user or the bot joins a channel
+	public signal void joined(string channel, string nick);
+
+	// emitted when someone says something
+	public signal void said(string channel, string nick, string text);
+
+	// emitted when someone sends a command
+	public signal void command(string channel, string nick, string cmd, string[] args);
 
 	public bool irc_connect()
 	{
@@ -130,11 +138,7 @@ class Bot : Object
 				if (match_info.fetch_named("cmd") == "NICK") {
 					userlist.remove(match_info.fetch_named("oldnick"));
 				} else if (match_info.fetch_named("cmd") == "JOIN") {
-					string[] args = {
-						match_info.fetch_named("channel"),
-						match_info.fetch_named("nick")
-							};
-					// TODO plugins::run_event("join", NULL, args);
+					joined(match_info.fetch_named("channel"), match_info.fetch_named("nick"));
 				}
 			}
 		} catch (Error e) {
@@ -148,6 +152,7 @@ class Bot : Object
 				usr = userlist.lookup(nick);
 				var target = match_info.fetch_named("target");
 				var text = match_info.fetch_named("text");
+				string channel;
 
 				// Set channel to the origin's nick if the
 				// PRIVMSG was sent directly to the bot
@@ -155,6 +160,8 @@ class Bot : Object
 					channel = nick;
 				else
 					channel = target;
+
+				said(channel, nick, text);
 
 				if (text[0:Settings.command_char.length] == Settings.command_char ||
 						channel == nick ||
@@ -170,13 +177,11 @@ class Bot : Object
 						var args = text.split(" ");
 						var cmd = args[0];
 						args = args[1:args.length];
-						// TODO plugins::run_event("command", cmd, args);
+						command(channel, nick, cmd, args);
 						// TODO alias
 						// TODO forward query
-						print(@"got command: $cmd\n");
 					}
 				}
-				// TODO plugins::run_event("text", text);
 			}
 		} catch (Error e) {
 			warning("%s\n", e.message);
