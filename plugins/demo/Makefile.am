@@ -1,7 +1,7 @@
-plugin_LTLIBRARIES = demo.la
+plugin_LTLIBRARIES = libdemo.la
 
-demo_la_VALAFLAGS = --vapidir=$(top_srcdir)/vapi
-demo_la_SOURCES = demo.vala ../plugin-interface.vala
-demo_la_LIBADD = $(FOOBOT_LIBS)
-demo_la_CFLAGS = $(FOOBOT_CFLAGS)
-demo_la_LDFLAGS = -module -avoid-version
+libdemo_la_VALAFLAGS = --vapidir=$(top_srcdir)/vapi
+libdemo_la_SOURCES = demo.vala ../plugin-interface.vala
+libdemo_la_LIBADD = $(FOOBOT_LIBS)
+libdemo_la_CFLAGS = $(FOOBOT_CFLAGS)
+libdemo_la_LDFLAGS = -module -avoid-version
