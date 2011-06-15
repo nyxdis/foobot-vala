@@ -18,9 +18,11 @@ config.sub
 configure
 depcomp
 foobot
+include
 install-sh
 libtool
 ltmain.sh
 m4
 missing
 stamp-h1
+vapi/foobot.vapi
