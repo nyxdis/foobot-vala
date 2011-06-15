@@ -16,13 +16,13 @@
  */
 
 
-private string config = null;
-private const OptionEntry[] options = {
+string config = null;
+const OptionEntry[] options = {
 	{ "config-file", 'f', 0, OptionArg.FILENAME, ref config, "Path to an alternative configuration file", null },
 	{ null }
 };
 
-public int main(string[] args)
+int main(string[] args)
 {
 	var loop = new MainLoop();
 	var context = new OptionContext("");

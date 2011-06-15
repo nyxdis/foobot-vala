@@ -19,7 +19,7 @@
 using GLib;
 using Config;
 
-public class PluginLoader<T> : Object
+class PluginLoader<T> : Object
 {
 	public string path { get; private set; }
 
@@ -59,7 +59,7 @@ public class PluginLoader<T> : Object
 	}
 }
 
-class Plugins : Object
+public class Plugins : Object
 {
 	private static List<PluginInterface> loaded;
 
