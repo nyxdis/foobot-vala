@@ -19,14 +19,14 @@
 using GLib;
 using Config;
 
-class PluginLoader<T> : Object
+class PluginLoader : Object
 {
 	public string path { get; private set; }
 
 	private Type type;
 	private Module module;
 
-	private delegate Type RegisterPluginFunction(Module module);
+	private delegate Type RegisterPluginFunction();
 
 	public PluginLoader(string name)
 	{
@@ -34,14 +34,14 @@ class PluginLoader<T> : Object
 		path = Module.build_path(PLUGINDIR, name);
 	}
 
-	public bool load()
+	public Plugin? load()
 	{
 		stdout.printf("Loading plugin: %s\n", path);
 
 		module = Module.open(path, ModuleFlags.BIND_LAZY);
 		if (module == null) {
 			stderr.printf("Failed to load module: %s\n", Module.error());
-			return false;
+			return null;
 		}
 
 		stdout.printf("Loaded module: %s\n", module.name());
@@ -49,29 +49,27 @@ class PluginLoader<T> : Object
 		void* function;
 		module.symbol("register_plugin", out function);
 		RegisterPluginFunction register_plugin = (RegisterPluginFunction) function;
-		type = register_plugin(module);
-		return true;
-	}
+		type = register_plugin();
 
-	public T new_object()
-	{
-		return Object.new(type);
+		var plug = (Plugin) Object.new(type);
+
+		return plug;
 	}
 }
 
 public class Plugins : Object
 {
-	private static List<PluginInterface> loaded;
+	private static Plugin[] loaded;
 
 	public static bool load(string name)
 	{
-		var registrar = new PluginLoader<PluginInterface>(name);
-		if (!registrar.load())
+		var registrar = new PluginLoader(name);
+		var plug = registrar.load();
+		if (plug == null)
 			return false;
 
-		var plugin = registrar.new_object();
-		plugin.init();
-		loaded.append(plugin);
+		plug.init();
+		loaded += plug;
 		return true;
 	}
 
