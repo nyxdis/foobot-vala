@@ -1,3 +1,5 @@
+using Foobot;
+
 class Demo : Object, Plugin {
 	public void init()
 	{

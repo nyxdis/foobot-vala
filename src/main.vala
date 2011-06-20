@@ -16,39 +16,42 @@
  */
 
 
-string config = null;
-const OptionEntry[] options = {
-	{ "config-file", 'f', 0, OptionArg.FILENAME, ref config, "Path to an alternative configuration file", null },
-	{ null }
-};
-
-int main(string[] args)
+namespace Foobot
 {
-	var loop = new MainLoop();
-	var context = new OptionContext("");
-	var bot = new Bot();
+	string config = null;
+	const OptionEntry[] options = {
+		{ "config-file", 'f', 0, OptionArg.FILENAME, ref config, "Path to an alternative configuration file", null },
+		{ null }
+	};
 
-	context.set_help_enabled(true);
-	context.add_main_entries(options, null);
-	try {
-		context.parse(ref args);
-	} catch (Error e) {
-		error("Failed to parse options: %s", e.message);
+	int main(string[] args)
+	{
+		var loop = new MainLoop();
+		var context = new OptionContext("");
+		var bot = new Bot();
+
+		context.set_help_enabled(true);
+		context.add_main_entries(options, null);
+		try {
+			context.parse(ref args);
+		} catch (Error e) {
+			error("Failed to parse options: %s", e.message);
+		}
+
+		if (!Settings.load(config))
+			return 1;
+
+		// set up signal handlers
+		bot.command.connect(Plugins.run_command);
+		bot.joined.connect(Plugins.run_joined);
+		bot.said.connect(Plugins.run_said);
+
+		if (bot.irc_connect())
+			bot.irc_post_connect();
+
+		bot.wait();
+		loop.run();
+
+		return 0;
 	}
-
-	if (!Settings.load(config))
-		return 1;
-
-	// set up signal handlers
-	bot.command.connect(Plugins.run_command);
-	bot.joined.connect(Plugins.run_joined);
-	bot.said.connect(Plugins.run_said);
-
-	if (bot.irc_connect())
-		bot.irc_post_connect();
-
-	bot.wait();
-	loop.run();
-
-	return 0;
 }

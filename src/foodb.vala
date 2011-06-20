@@ -19,12 +19,15 @@
 using GLib;
 using Sqlite;
 
-class Foodb : Object
+namespace Foobot
 {
-	private Database db;
-
-	Foodb()
+	class Foodb : Object
 	{
-		Database.open("foobot.db", out db);
+		private Database db;
+
+		Foodb()
+		{
+			Database.open("foobot.db", out db);
+		}
 	}
 }

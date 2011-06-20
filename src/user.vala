@@ -18,29 +18,32 @@
 
 using GLib;
 
-class User : Object
+namespace Foobot
 {
-	public int id { get; private set; }
-	public string name { get; private set; }
-	public int level { get; private set; }
-	public string nick { get; private set; }
-	public string ident { get; private set; }
-	public string host { get; private set; }
-	public string title { get; private set; }
-	private HashTable<string,string> userdata;
-
-	public User(string nick, string ident, string host)
+	class User : Object
 	{
-		// db lookup
-	}
+		public int id { get; private set; }
+		public string name { get; private set; }
+		public int level { get; private set; }
+		public string nick { get; private set; }
+		public string ident { get; private set; }
+		public string host { get; private set; }
+		public string title { get; private set; }
+		private HashTable<string,string> userdata;
 
-	public new string get(string index)
-	{
-		return userdata.lookup(index);
-	}
+		public User(string nick, string ident, string host)
+		{
+			// db lookup
+		}
 
-	public new void set(string index, string item)
-	{
-		userdata.insert(index, item);
+		public new string get(string index)
+		{
+			return userdata.lookup(index);
+		}
+
+		public new void set(string index, string item)
+		{
+			userdata.insert(index, item);
+		}
 	}
 }
