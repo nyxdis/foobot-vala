@@ -27,19 +27,16 @@ namespace Foobot
 		private HashTable<string,User> userlist;
 		public User usr { get; private set; }
 
-		public Bot()
-		{
-			userlist = new HashTable<string,User>(str_hash, str_equal);
-		}
-
 		// emitted when a user or the bot joins a channel
 		public signal void joined(string channel, string nick);
 
 		// emitted when someone says something
 		public signal void said(string channel, string nick, string text);
 
-		// emitted when someone sends a command
-		public signal void command(string channel, string nick, string cmd, string[] args);
+		public Bot()
+		{
+			userlist = new HashTable<string,User>(str_hash, str_equal);
+		}
 
 		public bool irc_connect()
 		{
@@ -179,7 +176,7 @@ namespace Foobot
 							var args = text.split(" ");
 							var cmd = args[0];
 							args = args[1:args.length];
-							command(channel, nick, cmd, args);
+							Plugins.run_command(channel, nick, cmd, args);
 							// TODO alias
 							// TODO forward query
 						}

@@ -41,11 +41,6 @@ namespace Foobot
 		if (!Settings.load(config))
 			return 1;
 
-		// set up signal handlers
-		bot.command.connect(Plugins.run_command);
-		bot.joined.connect(Plugins.run_joined);
-		bot.said.connect(Plugins.run_said);
-
 		if (bot.irc_connect())
 			bot.irc_post_connect();
 
