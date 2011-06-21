@@ -38,6 +38,8 @@ namespace Foobot
 			error("Failed to parse options: %s", e.message);
 		}
 
+		Plugins.init();
+
 		if (!Settings.load(config))
 			return 1;
 

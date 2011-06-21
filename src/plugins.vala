@@ -21,6 +21,13 @@ using Config;
 
 namespace Foobot
 {
+	struct Command {
+		string trigger;
+		string plugin;
+		string method;
+		int level;
+	}
+
 	class PluginHandler : Object
 	{
 		public string path { get; private set; }
@@ -30,7 +37,7 @@ namespace Foobot
 		private Plugin plugin;
 
 		private delegate Type RegisterPluginFunction();
-		private delegate void CommandCallback(string channel, string nick, string[] args);
+		private delegate void CommandCallback(Plugin self, string channel, string nick, string[] args);
 
 		public PluginHandler(string name)
 		{
@@ -56,6 +63,7 @@ namespace Foobot
 			type = register_plugin();
 
 			plugin = (Plugin) Object.new(type);
+			plugin.init();
 		}
 
 		public void unload()
@@ -70,28 +78,45 @@ namespace Foobot
 			void* function;
 			module.symbol(symbol, out function);
 			var callback = (CommandCallback) function;
-			callback(channel, nick, args);
+			callback(plugin, channel, nick, args);
 		}
 	}
 
 	class Plugins : Object
 	{
-		private static List<PluginHandler> loaded;
+		private static HashTable<string,PluginHandler> loaded;
+		private static List<Command?> commands;
+
+		public static void init()
+		{
+			loaded = new HashTable<string,PluginHandler>(str_hash, str_equal);
+		}
 
 		public static void load(string name)
 		{
 			var handler = new PluginHandler(name);
 			handler.load();
-			loaded.append(handler);
+			loaded.insert(name, handler);
 		}
 
 		public static void run_command(string channel, string nick, string cmd, string[] args)
 		{
-			print(@"signal: $nick executed $cmd in $channel\n");
+			foreach (var command in commands) {
+				if (command.trigger == cmd) {
+					var plugin = loaded.lookup(command.plugin.down());
+					plugin.run_callback(command.method, channel, nick, args);
+				}
+			}
 		}
 
 		public static void register_command(string trigger, string plugin, string method, int level)
 		{
+			var command = Command();
+			command.trigger = trigger;
+			command.plugin = plugin;
+			command.method = method;
+			command.level = level;
+			commands.append(command);
 		}
 	}
 }
