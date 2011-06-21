@@ -65,7 +65,7 @@ namespace Foobot
 
 		public void run_callback(string method, string channel, string nick, string[] args)
 		{
-			var symbol = type.name() + "_" + method;
+			var symbol = type.name().down() + "_" + method;
 
 			void* function;
 			module.symbol(symbol, out function);
