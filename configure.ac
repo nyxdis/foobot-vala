@@ -6,7 +6,8 @@ AM_INIT_AUTOMAKE([dist-bzip2 foreign subdir-objects])
 AM_MAINTAINER_MODE
 
 AC_PROG_CC
-AC_PROG_LIBTOOL
+LT_PREREQ([2.2.6])
+LT_INIT([disable-static])
 
 AC_PATH_PROG(VALAC, valac, valac)
 AC_SUBST(VALAC)
