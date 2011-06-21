@@ -21,29 +21,31 @@ using Config;
 
 namespace Foobot
 {
-	class PluginLoader : Object
+	class PluginHandler : Object
 	{
 		public string path { get; private set; }
 
 		private Type type;
 		private Module module;
+		private Plugin plugin;
 
 		private delegate Type RegisterPluginFunction();
+		private delegate void CommandCallback(string channel, string nick, string[] args);
 
-		public PluginLoader(string name)
+		public PluginHandler(string name)
 		{
 			assert (Module.supported());
 			path = Module.build_path(PLUGINDIR, name);
 		}
 
-		public Plugin? load()
+		public void load()
 		{
 			stdout.printf("Loading plugin: %s\n", path);
 
 			module = Module.open(path, ModuleFlags.BIND_LAZY);
 			if (module == null) {
 				stderr.printf("Failed to load module: %s\n", Module.error());
-				return null;
+				return;
 			}
 
 			stdout.printf("Loaded module: %s\n", module.name());
@@ -53,28 +55,34 @@ namespace Foobot
 			RegisterPluginFunction register_plugin = (RegisterPluginFunction) function;
 			type = register_plugin();
 
-			var plug = (Plugin) Object.new(type);
+			plugin = (Plugin) Object.new(type);
+		}
 
-			return plug;
+		public void unload()
+		{
+			module = null;
+		}
+
+		public void run_callback(string method, string channel, string nick, string[] args)
+		{
+			var symbol = type.name() + "_" + method;
+
+			void* function;
+			module.symbol(symbol, out function);
+			var callback = (CommandCallback) function;
+			callback(channel, nick, args);
 		}
 	}
 
 	class Plugins : Object
 	{
-		private static Plugin[] loaded;
+		private static List<PluginHandler> loaded;
 
-		private delegate void CommandCallback(string channel, string nick, string[] args);
-
-		public static bool load(string name)
+		public static void load(string name)
 		{
-			var registrar = new PluginLoader(name);
-			var plug = registrar.load();
-			if (plug == null)
-				return false;
-
-			plug.init();
-			loaded += plug;
-			return true;
+			var handler = new PluginHandler(name);
+			handler.load();
+			loaded.append(handler);
 		}
 
 		public static void run_joined(string channel, string nick)
