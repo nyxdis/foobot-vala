@@ -2,6 +2,7 @@ AC_INIT([foobot], [0.1.0], [mende.christoph@gmail.com], [foobot])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([dist-bzip2 foreign subdir-objects])
 AM_MAINTAINER_MODE
 
