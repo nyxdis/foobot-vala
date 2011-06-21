@@ -59,9 +59,11 @@ namespace Foobot
 		}
 	}
 
-	public class Plugins : Object
+	class Plugins : Object
 	{
 		private static Plugin[] loaded;
+
+		private delegate void CommandCallback(string channel, string nick, string[] args);
 
 		public static bool load(string name)
 		{
@@ -88,6 +90,10 @@ namespace Foobot
 		public static void run_command(string channel, string nick, string cmd, string[] args)
 		{
 			print(@"signal: $nick executed $cmd in $channel\n");
+		}
+
+		public static void register_command(string trigger, string plugin, string method, int level)
+		{
 		}
 	}
 }

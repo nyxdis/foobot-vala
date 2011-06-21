@@ -3,7 +3,11 @@ using Foobot;
 class Demo : Object, Plugin {
 	public void init()
 	{
-		print("demo plugin initialized\n");
+		register_command("ping");
+	}
+
+	public void ping(string channel, string nick)
+	{
 	}
 }
 
