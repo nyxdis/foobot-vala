@@ -45,5 +45,11 @@ namespace Foobot
 				stderr.printf("%s\n", e.message);
 			}
 		}
+
+		public void say(string target, string text)
+		{
+			// TODO line wrapping
+			send(@"PRIVMSG $target :$text");
+		}
 	}
 }
