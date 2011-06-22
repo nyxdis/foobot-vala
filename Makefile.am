@@ -23,6 +23,7 @@ bin_PROGRAMS = foobot
 foobot_SOURCES = src/main.vala \
 		 src/bot.vala \
 		 src/foodb.vala \
+		 src/irc.vala \
 		 src/plugin-interface.vala \
 		 src/plugins.vala \
 		 src/settings.vala \

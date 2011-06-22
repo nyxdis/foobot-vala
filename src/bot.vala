@@ -22,20 +22,13 @@ namespace Foobot
 {
 	class Bot : Object
 	{
-		private DataInputStream istream;
-		private DataOutputStream ostream;
 		private HashTable<string,User> userlist;
 		public User usr { get; private set; }
-
-		// emitted when a user or the bot joins a channel
-		public signal void joined(string channel, string nick);
-
-		// emitted when someone says something
-		public signal void said(string channel, string nick, string text);
 
 		public Bot()
 		{
 			userlist = new HashTable<string,User>(str_hash, str_equal);
+			irc = new IRC();
 		}
 
 		public bool irc_connect()
@@ -58,9 +51,9 @@ namespace Foobot
 					DataOutputStream(conn.output_stream);
 
 				// Send user/nick
-				send(@"USER $(Settings.username) +i * "
+				irc.send(@"USER $(Settings.username) +i * "
 						+ @":$(Settings.realname)");
-				send(@"NICK $(Settings.nick)");
+				irc.send(@"NICK $(Settings.nick)");
 
 				// Read response
 				for (;;) {
@@ -82,22 +75,7 @@ namespace Foobot
 			// TODO auth
 			// TODO join debug channel
 			// TODO join all channels
-			join("#foobot");
-		}
-
-		public void join(string channel, string key = "")
-		{
-			send(@"JOIN $channel :$key");
-			send(@"WHO $channel");
-		}
-
-		public void send(string raw)
-		{
-			try {
-				ostream.put_string(@"$raw\n");
-			} catch (Error e) {
-				stderr.printf("%s\n", e.message);
-			}
+			irc.join("#foobot");
 		}
 
 		private void log(string msg)
@@ -121,7 +99,7 @@ namespace Foobot
 			MatchInfo match_info;
 
 			if (line.has_prefix("PING :"))
-				send(@"PONG :$(line[6:line.length])");
+				irc.send(@"PONG :$(line[6:line.length])");
 
 			// Update userlist on JOIN, NICK and WHO events
 			try {
@@ -137,7 +115,7 @@ namespace Foobot
 					if (match_info.fetch_named("cmd") == "NICK") {
 						userlist.remove(match_info.fetch_named("oldnick"));
 					} else if (match_info.fetch_named("cmd") == "JOIN") {
-						joined(match_info.fetch_named("channel"), match_info.fetch_named("nick"));
+						irc.joined(match_info.fetch_named("channel"), match_info.fetch_named("nick"));
 					}
 				}
 			} catch (Error e) {
@@ -160,7 +138,7 @@ namespace Foobot
 					else
 						channel = target;
 
-					said(channel, nick, text);
+					irc.said(channel, nick, text);
 
 					if (text[0:Settings.command_char.length] == Settings.command_char ||
 							channel == nick ||

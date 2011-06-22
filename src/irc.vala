@@ -16,41 +16,34 @@
  */
 
 
+using GLib;
+
 namespace Foobot
 {
-	public IRC irc;
+	private DataInputStream istream;
+	private DataOutputStream ostream;
 
-	string config = null;
-	const OptionEntry[] options = {
-		{ "config-file", 'f', 0, OptionArg.FILENAME, ref config, "Path to an alternative configuration file", null },
-		{ null }
-	};
-
-	int main(string[] args)
+	public class IRC : Object
 	{
-		var loop = new MainLoop();
-		var context = new OptionContext("");
-		var bot = new Bot();
+		// emitted when a user or the bot joins a channel
+		public signal void joined(string channel, string nick);
 
-		context.set_help_enabled(true);
-		context.add_main_entries(options, null);
-		try {
-			context.parse(ref args);
-		} catch (Error e) {
-			error("Failed to parse options: %s", e.message);
+		// emitted when someone says something
+		public signal void said(string channel, string nick, string text);
+
+		public void join(string channel, string key = "")
+		{
+			send(@"JOIN $channel :$key");
+			send(@"WHO $channel");
 		}
 
-		Plugins.init();
-
-		if (!Settings.load(config))
-			return 1;
-
-		if (bot.irc_connect())
-			bot.irc_post_connect();
-
-		bot.wait();
-		loop.run();
-
-		return 0;
+		public void send(string raw)
+		{
+			try {
+				ostream.put_string(@"$raw\n");
+			} catch (Error e) {
+				stderr.printf("%s\n", e.message);
+			}
+		}
 	}
 }
