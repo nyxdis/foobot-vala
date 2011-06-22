@@ -8,6 +8,7 @@ class Demo : Object, Plugin {
 
 	public void ping(string channel, string nick)
 	{
+		irc.say(channel, @"$nick: pong");
 	}
 }
 
