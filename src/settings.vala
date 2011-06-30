@@ -16,11 +16,12 @@
  */
 
 
+using Config;
 using GLib;
 
 namespace Foobot
 {
-	class Settings : Object
+	public class Settings : Object
 	{
 		private static KeyFile config;
 
@@ -42,8 +43,11 @@ namespace Foobot
 		public static string listen_addr { get; private set; }
 		public static uint16 dcc_port { get; private set; }
 		public static string[] plugin_blacklist { get; private set; }
+		public static string version { get; private set; }
 
-		public static bool load(string? file)
+		internal Settings() {}
+
+		internal static bool load(string? file)
 		{
 			config = new KeyFile();
 
@@ -99,6 +103,7 @@ namespace Foobot
 				warning("%s\n", e.message);
 				return false;
 			}
+			version = PACKAGE_VERSION;
 
 			return true;
 		}

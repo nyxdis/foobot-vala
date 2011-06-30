@@ -32,7 +32,7 @@ class Core : Object, Plugin {
 
 	public void ctcp_version(string channel)
 	{
-		irc.send(@"NOTICE $channel :\001VERSION foobot vBOT_VERSION\001");
+		irc.send(@"NOTICE $channel :\001VERSION foobot v$(Settings.version)\001");
 	}
 
 	public void addhost(string channel, string nick, string[] args)
