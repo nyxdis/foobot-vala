@@ -19,6 +19,7 @@
 namespace Foobot
 {
 	public IRC irc;
+	public Foodb db;
 
 	string config = null;
 	const OptionEntry[] options = {
@@ -39,6 +40,8 @@ namespace Foobot
 		} catch (Error e) {
 			error("Failed to parse options: %s", e.message);
 		}
+
+		db = new Foodb();
 
 		Plugins.init();
 		Plugins.load("core");
