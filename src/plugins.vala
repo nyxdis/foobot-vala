@@ -45,14 +45,14 @@ namespace Foobot
 			path = Module.build_path(PLUGINDIR, name);
 		}
 
-		public void load()
+		public bool load()
 		{
 			stdout.printf("Loading plugin: %s\n", path);
 
 			module = Module.open(path, ModuleFlags.BIND_LAZY);
 			if (module == null) {
 				stderr.printf("Failed to load module: %s\n", Module.error());
-				return;
+				return false;
 			}
 
 			stdout.printf("Loaded module: %s\n", module.name());
@@ -64,6 +64,7 @@ namespace Foobot
 
 			plugin = (Plugin) Object.new(type);
 			plugin.init();
+			return true;
 		}
 
 		public void unload()
@@ -94,18 +95,23 @@ namespace Foobot
 			loaded = new HashTable<string,PluginHandler>(str_hash, str_equal);
 		}
 
-		public static void load(string name)
+		public static bool load(string name)
 		{
 			var handler = new PluginHandler(name);
-			handler.load();
+			if (!handler.load())
+				return false;
 			loaded.insert(name, handler);
+			return true;
 		}
 
-		public static void unload(string name)
+		public static bool unload(string name)
 		{
 			var handler = loaded.lookup(name);
+			if (handler == null)
+				return false;
 			handler.unload();
 			loaded.remove(name);
+			return true;
 		}
 
 		internal static void run_command(string channel, string nick, string cmd, string[] args)
