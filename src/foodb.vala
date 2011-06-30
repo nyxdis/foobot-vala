@@ -27,7 +27,7 @@ namespace Foobot
 
 		internal Foodb()
 		{
-			Database.open("foobot.db", out db);
+			Database.open(@"foobot-$(Settings.network).db", out db);
 
 			initialize();
 		}

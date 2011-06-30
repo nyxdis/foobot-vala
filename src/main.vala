@@ -41,13 +41,13 @@ namespace Foobot
 			error("Failed to parse options: %s", e.message);
 		}
 
+		if (!Settings.load(config))
+			return 1;
+
 		db = new Foodb();
 
 		Plugins.init();
 		Plugins.load("core");
-
-		if (!Settings.load(config))
-			return 1;
 
 		if (bot.irc_connect())
 			bot.irc_post_connect();
