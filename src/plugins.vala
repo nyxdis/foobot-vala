@@ -101,6 +101,13 @@ namespace Foobot
 			loaded.insert(name, handler);
 		}
 
+		public static void unload(string name)
+		{
+			var handler = loaded.lookup(name);
+			handler.unload();
+			loaded.remove(name);
+		}
+
 		internal static void run_command(string channel, string nick, string cmd, string[] args)
 		{
 			foreach (var command in commands) {
