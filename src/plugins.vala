@@ -82,12 +82,14 @@ namespace Foobot
 		}
 	}
 
-	class Plugins : Object
+	public class Plugins : Object
 	{
 		private static HashTable<string,PluginHandler> loaded;
 		private static List<Command?> commands;
 
-		public static void init()
+		internal Plugins() {}
+
+		internal static void init()
 		{
 			loaded = new HashTable<string,PluginHandler>(str_hash, str_equal);
 		}
@@ -99,7 +101,7 @@ namespace Foobot
 			loaded.insert(name, handler);
 		}
 
-		public static void run_command(string channel, string nick, string cmd, string[] args)
+		internal static void run_command(string channel, string nick, string cmd, string[] args)
 		{
 			foreach (var command in commands) {
 				if (command.trigger == cmd) {
@@ -109,7 +111,7 @@ namespace Foobot
 			}
 		}
 
-		public static void register_command(string trigger, string plugin, string method, int level)
+		internal static void register_command(string trigger, string plugin, string method, int level)
 		{
 			var command = Command();
 			command.trigger = trigger;
