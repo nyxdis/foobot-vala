@@ -41,6 +41,7 @@ namespace Foobot
 		}
 
 		Plugins.init();
+		Plugins.load("core");
 
 		if (!Settings.load(config))
 			return 1;

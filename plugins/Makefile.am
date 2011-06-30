@@ -1,1 +1,1 @@
-SUBDIRS = demo
+SUBDIRS = core demo

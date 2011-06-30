@@ -25,6 +25,9 @@ PKG_CHECK_MODULES(FOOBOT, glib-2.0 >= $GLIB_REQUIRED
 		  gio-2.0 >= $GLIB_REQUIRED
 		  sqlite3)
 
-AC_CONFIG_FILES([Makefile plugins/Makefile
-		 plugins/demo/Makefile])
+AC_CONFIG_FILES([Makefile
+		 plugins/Makefile
+		 plugins/core/Makefile
+		 plugins/demo/Makefile
+		 ])
 AC_OUTPUT
