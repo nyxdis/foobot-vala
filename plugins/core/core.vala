@@ -43,96 +43,97 @@ class Core : Object, Plugin {
 	{
 	}
 
-
 	public void alias(string channel, string nick, string[] args)
 	{
 	}
-
 
 	public void chlvl(string channel, string nick, string[] args)
 	{
 	}
 
-
 	public void getuserdata(string channel, string nick, string[] args)
 	{
 	}
-
 
 	public void help(string channel, string nick, string[] args)
 	{
 	}
 
-
 	public void hi(string channel, string nick)
 	{
 	}
-
 
 	public void join(string channel, string nick, string[] args)
 	{
 	}
 
-
 	public void enable(string channel, string nick, string[] args)
 	{
 	}
-
 
 	public void disable(string channel, string nick, string[] args)
 	{
 	}
 
-
 	public void load(string channel, string nick, string[] args)
 	{
-	}
+		var plugin = args[0];
 
+		if (Plugins.load(plugin))
+			irc.say(channel, @"$nick: $plugin loaded");
+		else
+			irc.say(channel, @"$nick: failed to load $plugin");
+	}
 
 	public void merge(string channel, string nick, string[] args)
 	{
 	}
 
-
 	public void raw(string channel, string nick, string[] args)
 	{
 	}
-
 
 	public void reboot(string channel, string nick)
 	{
 	}
 
+	public void reload(string channel, string nick, string[] args)
+	{
+	}
 
 	public void shutdown(string channel, string nick)
 	{
 	}
 
-
 	public void sql(string channel, string nick, string[] args)
 	{
 	}
-
 
 	public void unalias(string channel, string nick, string[] args)
 	{
 	}
 
+	public void unload(string channel, string nick, string[] args)
+	{
+		var plugin = args[0];
+
+		if (Plugins.unload(plugin))
+			irc.say(channel, @"$nick: $plugin unloaded");
+		else
+			irc.say(channel, @"$nick: failed to unload $plugin");
+	}
 
 	public void version(string channel, string nick)
 	{
 	}
 
-
 	public void who(string channel, string nick, string[] args)
 	{
 	}
 
-
 	public void whoami(string channel, string nick)
 	{
 	}
-
 
 	public void whois(string channel, string nick, string[] args)
 	{
