@@ -104,11 +104,16 @@ namespace Foobot
 			return true;
 		}
 
-		public static bool unload(string name)
+		public static bool unload(string _name)
 		{
+			var name = _name.down();
+
 			var handler = loaded.lookup(name);
 			if (handler == null)
 				return false;
+
+			// TODO: remove associated commands
+
 			handler.unload();
 			loaded.remove(name);
 			return true;
@@ -118,7 +123,7 @@ namespace Foobot
 		{
 			foreach (var command in commands) {
 				if (command.trigger == cmd) {
-					var plugin = loaded.lookup(command.plugin.down());
+					var plugin = loaded.lookup(command.plugin);
 					plugin.run_callback(command.method, channel, nick, args);
 				}
 			}
@@ -128,7 +133,7 @@ namespace Foobot
 		{
 			var command = Command();
 			command.trigger = trigger;
-			command.plugin = plugin;
+			command.plugin = plugin.down();
 			command.method = method;
 			command.level = level;
 			commands.append(command);
