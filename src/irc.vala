@@ -28,6 +28,8 @@ namespace Foobot
 		// emitted when a user or the bot joins a channel
 		public signal void joined(string channel, string nick);
 
+		internal IRC() {}
+
 		// emitted when someone says something
 		public signal void said(string channel, string nick, string text);
 
