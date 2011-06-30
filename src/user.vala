@@ -20,7 +20,7 @@ using GLib;
 
 namespace Foobot
 {
-	class User : Object
+	public class User : Object
 	{
 		public int id { get; private set; }
 		public string name { get; private set; }
