@@ -86,9 +86,9 @@ namespace Foobot
 	public class Plugins : Object
 	{
 		private static HashTable<string,PluginHandler> loaded;
-		private static List<Command?> commands;
+		private static SList<Command?> commands;
 
-		internal Plugins() {}
+		private Plugins() {}
 
 		internal static void init()
 		{
@@ -112,7 +112,12 @@ namespace Foobot
 			if (handler == null)
 				return false;
 
-			// TODO: remove associated commands
+			commands.foreach((data) => {
+					if (data.plugin == name)
+						commands.remove(data);
+					});
+
+			// TODO unregister type
 
 			handler.unload();
 			loaded.remove(name);
