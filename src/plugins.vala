@@ -35,14 +35,15 @@ namespace Foobot
 		private Type type;
 		private Module module;
 		private Plugin plugin;
+		private bool registered;
 
 		private delegate Type RegisterPluginFunction();
 		private delegate void CommandCallback(Plugin self, string channel, string nick, string[] args);
 
 		public PluginHandler(string name)
 		{
-			assert (Module.supported());
 			path = Module.build_path(PLUGINDIR, name);
+			registered = false;
 		}
 
 		public bool load()
@@ -57,10 +58,13 @@ namespace Foobot
 
 			stdout.printf("Loaded module: %s\n", module.name());
 
-			void* function;
-			module.symbol("register_plugin", out function);
-			RegisterPluginFunction register_plugin = (RegisterPluginFunction) function;
-			type = register_plugin();
+			if (!registered) {
+				void* function;
+				module.symbol("register_plugin", out function);
+				RegisterPluginFunction register_plugin = (RegisterPluginFunction) function;
+				type = register_plugin();
+				registered = true;
+			}
 
 			plugin = (Plugin) Object.new(type);
 			plugin.init();
@@ -97,10 +101,16 @@ namespace Foobot
 
 		public static bool load(string name)
 		{
-			var handler = new PluginHandler(name);
+			PluginHandler handler = loaded.lookup(name);
+
+			if (handler == null) {
+				handler = new PluginHandler(name);
+				loaded.insert(name, handler);
+			}
+
 			if (!handler.load())
 				return false;
-			loaded.insert(name, handler);
+
 			return true;
 		}
 
@@ -117,10 +127,7 @@ namespace Foobot
 						commands.remove(data);
 					});
 
-			// TODO unregister type
-
 			handler.unload();
-			loaded.remove(name);
 			return true;
 		}
 
