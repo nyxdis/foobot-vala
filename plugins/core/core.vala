@@ -123,6 +123,11 @@ class Core : Object, Plugin {
 	{
 		var plugin = args[0];
 
+		if (plugin.down() == "core") {
+			irc.say(channel, @"$nick: not going to unload core");
+			return;
+		}
+
 		if (Plugins.unload(plugin))
 			irc.say(channel, @"$nick: $plugin unloaded");
 		else
