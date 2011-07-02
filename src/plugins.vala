@@ -144,4 +144,20 @@ namespace Foobot
 			commands.append(command);
 		}
 	}
+
+	public interface Plugin : Object
+	{
+		public abstract void init();
+
+		protected void register_command(string command, string? method = null, int level = 1)
+		{
+			var type = Type.from_instance(this);
+			var plugin = type.name();
+
+			if (method == null)
+				method = command;
+
+			Plugins.register_command(command, plugin, method, level);
+		}
+	}
 }
