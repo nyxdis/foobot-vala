@@ -99,6 +99,12 @@ class Core : Object, Plugin {
 
 	public void reload(string channel, string nick, string[] args)
 	{
+		var plugin = args[0];
+
+		if (Plugins.unload(plugin) && Plugins.load(plugin))
+			irc.say(channel, @"$nick: $plugin reloaded");
+		else
+			irc.say(channel, @"$nick: failed to reload $plugin");
 	}
 
 	public void shutdown(string channel, string nick)
