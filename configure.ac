@@ -23,7 +23,7 @@ PKG_CHECK_MODULES(FOOBOT, glib-2.0 >= $GLIB_REQUIRED
 		  gmodule-2.0 >= $GLIB_REQUIRED
 		  gobject-2.0 >= $GLIB_REQUIRED
 		  gio-2.0 >= $GLIB_REQUIRED
-		  sqlite3)
+		  libgda-sqlite-4.0)
 
 AC_CONFIG_FILES([Makefile
 		 plugins/Makefile
