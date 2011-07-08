@@ -21,28 +21,106 @@ using GLib;
 
 namespace Foobot
 {
+	/**
+	 * Access to the bot's settings
+	 */
 	public class Settings : Object
 	{
 		private static KeyFile config;
 
+		/**
+		 * The command char used by the bot, ! by default
+		 */
 		public static string command_char { get; private set; }
+
+		/**
+		 * The bot's nickname, foobot by default
+		 */
 		public static string nick { get; private set; }
+
+		/**
+		 * The bot's username, foobot by default
+		 */
 		public static string username { get; private set; }
+
+		/**
+		 * The bot's realname, foobot by default
+		 **/
 		public static string realname { get; private set; }
+
+		/**
+		 * The IRC server, mandatory setting
+		 */
 		public static string server { get; private set; }
+
+		/**
+		 * The IRC port, 6667 by default
+		 */
 		public static uint16 port { get; private set; }
+
+		/**
+		 * The name of the IRC network, default by default
+		 */
 		public static string network { get; private set; }
+
+		/**
+		 * The channels the bot autojoins
+		 */
 		public static string[] channels { get; private set; }
+
+		/**
+		 * Password used for authentication
+		 **/
 		public static string authpass { get; private set; }
+
+		/**
+		 * Nickname used for authentication
+		 **/
 		public static string authnick { get; private set; }
+
+		/**
+		 * Service to authenticate against, NickServ by default
+		 */
 		public static string authserv { get; private set; }
+
+		/**
+		 * Command used for authentication, identify by default
+		 */
 		public static string authcmd { get; private set; }
+
+		/**
+		 * Enable debugging
+		 */
 		public static bool debug_mode { get; private set; }
+
+		/**
+		 * Channel for debug messages
+		 */
 		public static string debug_channel { get; private set; }
+
+		/**
+		 * Primary bot channel
+		 */
 		public static string main_channel { get; private set; }
+
+		/**
+		 * DCC listening address
+		 */
 		public static string listen_addr { get; private set; }
+
+		/**
+		 * DCC listening port
+		 */
 		public static uint16 dcc_port { get; private set; }
+
+		/**
+		 * List of plugins not to load on startup
+		 */
 		public static string[] plugin_blacklist { get; private set; }
+
+		/**
+		 * The bot's version
+		 */
 		public static string version { get; private set; }
 
 		internal Settings() {}
@@ -70,8 +148,8 @@ namespace Foobot
 				network = get_string_if_exists("network") ?? "default";
 				authpass = get_string_if_exists("authpass");
 				authnick = get_string_if_exists("authnick");
-				authserv = get_string_if_exists("authserv");
-				authcmd = get_string_if_exists("authcmd");
+				authserv = get_string_if_exists("authserv") ?? "authserv";
+				authcmd = get_string_if_exists("authcmd") ?? "identify";
 				debug_channel = get_string_if_exists("debug_channel");
 				main_channel = get_string_if_exists("main_channel");
 				listen_addr = get_string_if_exists("listen_addr");

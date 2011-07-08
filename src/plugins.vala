@@ -87,6 +87,9 @@ namespace Foobot
 		}
 	}
 
+	/**
+	 * Plugin management
+	 **/
 	public class Plugins : Object
 	{
 		private static HashTable<string,PluginHandler> loaded;
@@ -99,6 +102,13 @@ namespace Foobot
 			loaded = new HashTable<string,PluginHandler>(str_hash, str_equal);
 		}
 
+		/**
+		 * Load a plugin by name
+		 *
+		 * @param name the filename of the plugin without "lib" suffix
+		 * and file extension
+		 * @return wether the plugin was loaded successfully
+		 */
 		public static bool load(string name)
 		{
 			PluginHandler handler = loaded.lookup(name);
@@ -114,6 +124,15 @@ namespace Foobot
 			return true;
 		}
 
+		/**
+		 * Unload a plugin
+		 *
+		 * This function unregisters any commands used in the plugin
+		 * and unloads it
+		 *
+		 * @param _name name of the plugin
+		 * @return false if the plugin is not loaded
+		 */
 		public static bool unload(string _name)
 		{
 			var name = _name.down();
@@ -152,10 +171,28 @@ namespace Foobot
 		}
 	}
 
+	/**
+	 * The base class for plugins
+	 *
+	 * Plugins have to inherit this class and they have to define their own
+	 * init function.
+	 */
 	public interface Plugin : Object
 	{
+		/**
+		 * Initialize the plugin, this is called immediately after
+		 * loading the plugin
+		 */
 		public abstract void init();
 
+		/**
+		 * Use this function to register any new commands in the bot
+		 *
+		 * @param command trigger for the command, without command char
+		 * @param method method to call when the command is triggered
+		 * or null if it is the same as the trigger
+		 * @param level required level for the function
+		 */
 		protected void register_command(string command, string? method = null, int level = 1)
 		{
 			var type = Type.from_instance(this);

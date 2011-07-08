@@ -18,7 +18,14 @@
 
 namespace Foobot
 {
+	/**
+	 * Instance used for IRC commands
+	 */
 	public IRC irc;
+
+	/**
+	 * Instance used for database access
+	 */
 	public Foodb db;
 
 	string config = null;
