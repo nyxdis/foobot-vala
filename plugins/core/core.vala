@@ -1,6 +1,6 @@
 using Foobot;
 
-class Core : Object, Plugin {
+public class Core : Object, Plugin {
 	public void init()
 	{
 		register_command("\001VERSION\001", "ctcp_version");

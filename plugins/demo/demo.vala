@@ -1,6 +1,6 @@
 using Foobot;
 
-class Demo : Object, Plugin {
+public class Demo : Object, Plugin {
 	public void init()
 	{
 		register_command("ping");
