@@ -74,11 +74,15 @@ namespace Foobot
 			void* function;
 			module.symbol(symbol, out function);
 			var callback = (CommandCallback) function;
-			Thread.create<void*>(() => {
-				callback(plugin, channel, user, args);
-				return null;
-				}, false);
-			yield;
+			try {
+				Thread.create<void*>(() => {
+					callback(plugin, channel, user, args);
+					return null;
+					}, false);
+				yield;
+			} catch (Error e) {
+				stderr.printf("Failed to create plugin thread: %s", e.message);
+			}
 		}
 	}
 
