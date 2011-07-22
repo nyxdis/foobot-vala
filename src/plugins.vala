@@ -154,7 +154,8 @@ namespace Foobot
 			foreach (var command in commands) {
 				if (command.trigger == cmd) {
 					var plugin = loaded.lookup(command.plugin);
-					plugin.run_callback.begin(command.method, channel, user, args);
+					if (user.level >= command.level)
+						plugin.run_callback.begin(command.method, channel, user, args);
 				}
 			}
 		}
