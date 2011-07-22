@@ -26,9 +26,9 @@ namespace Foobot
 		 * Emitted when a user or the bot joins a channel
 		 *
 		 * @param channel the joined channel
-		 * @param nick who joined the channel
+		 * @param user who joined the channel
 		 */
-		public signal void joined(string channel, string nick);
+		public signal void joined(string channel, User user);
 
 		internal IRC() {}
 
@@ -36,10 +36,10 @@ namespace Foobot
 		 * Emitted when someone says something
 		 *
 		 * @param channel the channel where the event occured
-		 * @param nick who said it
+		 * @param user who said it
 		 * @param text what they said
 		 */
-		public signal void said(string channel, string nick, string text);
+		public signal void said(string channel, User user, string text);
 
 		/**
 		 * Join a new channel

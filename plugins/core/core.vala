@@ -43,118 +43,118 @@ public class Core : Object, Plugin {
 		irc.send(@"NOTICE $channel :\001VERSION foobot v$(Settings.version)\001");
 	}
 
-	public void addhost(string channel, string nick, string[] args)
+	public void addhost(string channel, User user, string[] args)
 	{
 	}
 
-	public void adduser(string channel, string nick, string[] args)
+	public void adduser(string channel, User user, string[] args)
 	{
 	}
 
-	public void alias(string channel, string nick, string[] args)
+	public void alias(string channel, User user, string[] args)
 	{
 	}
 
-	public void chlvl(string channel, string nick, string[] args)
+	public void chlvl(string channel, User user, string[] args)
 	{
 	}
 
-	public void getuserdata(string channel, string nick, string[] args)
+	public void getuserdata(string channel, User user, string[] args)
 	{
 	}
 
-	public void help(string channel, string nick, string[] args)
+	public void help(string channel, User user, string[] args)
 	{
 	}
 
-	public void hi(string channel, string nick)
+	public void hi(string channel, User user)
 	{
 	}
 
-	public void join(string channel, string nick, string[] args)
+	public void join(string channel, User user, string[] args)
 	{
 	}
 
-	public void enable(string channel, string nick, string[] args)
+	public void enable(string channel, User user, string[] args)
 	{
 	}
 
-	public void disable(string channel, string nick, string[] args)
+	public void disable(string channel, User user, string[] args)
 	{
 	}
 
-	public void load(string channel, string nick, string[] args)
+	public void load(string channel, User user, string[] args)
 	{
 		var plugin = args[0];
 
 		if (Plugins.load(plugin))
-			irc.say(channel, @"$nick: $plugin loaded");
+			irc.say(channel, @"$(user.nick): $plugin loaded");
 		else
-			irc.say(channel, @"$nick: failed to load $plugin");
+			irc.say(channel, @"$(user.nick): failed to load $plugin");
 	}
 
-	public void merge(string channel, string nick, string[] args)
+	public void merge(string channel, User user, string[] args)
 	{
 	}
 
-	public void raw(string channel, string nick, string[] args)
+	public void raw(string channel, User user, string[] args)
 	{
 	}
 
-	public void reboot(string channel, string nick)
+	public void reboot(string channel, User user)
 	{
 	}
 
-	public void reload(string channel, string nick, string[] args)
+	public void reload(string channel, User user, string[] args)
 	{
 		var plugin = args[0];
 
 		if (Plugins.unload(plugin) && Plugins.load(plugin))
-			irc.say(channel, @"$nick: $plugin reloaded");
+			irc.say(channel, @"$(user.nick): $plugin reloaded");
 		else
-			irc.say(channel, @"$nick: failed to reload $plugin");
+			irc.say(channel, @"$(user.nick): failed to reload $plugin");
 	}
 
-	public void shutdown(string channel, string nick)
+	public void shutdown(string channel, User user)
 	{
 	}
 
-	public void sql(string channel, string nick, string[] args)
+	public void sql(string channel, User user, string[] args)
 	{
 	}
 
-	public void unalias(string channel, string nick, string[] args)
+	public void unalias(string channel, User user, string[] args)
 	{
 	}
 
-	public void unload(string channel, string nick, string[] args)
+	public void unload(string channel, User user, string[] args)
 	{
 		var plugin = args[0];
 
 		if (plugin.down() == "core") {
-			irc.say(channel, @"$nick: not going to unload core");
+			irc.say(channel, @"$(user.nick): not going to unload core");
 			return;
 		}
 
 		if (Plugins.unload(plugin))
-			irc.say(channel, @"$nick: $plugin unloaded");
+			irc.say(channel, @"$(user.nick): $plugin unloaded");
 		else
-			irc.say(channel, @"$nick: failed to unload $plugin");
+			irc.say(channel, @"$(user.nick): failed to unload $plugin");
 	}
 
-	public void version(string channel, string nick)
+	public void version(string channel, User user)
 	{
 	}
 
-	public void who(string channel, string nick, string[] args)
+	public void who(string channel, User user, string[] args)
 	{
 	}
 
-	public void whoami(string channel, string nick)
+	public void whoami(string channel, User user)
 	{
 	}
 
-	public void whois(string channel, string nick, string[] args)
+	public void whois(string channel, User user, string[] args)
 	{
 	}
 }

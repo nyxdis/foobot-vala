@@ -13,7 +13,6 @@ namespace Foobot
 	class Bot : Object
 	{
 		private HashTable<string,User> userlist;
-		public User usr { get; private set; }
 
 		public Bot()
 		{
@@ -102,13 +101,14 @@ namespace Foobot
 					var nick = match_info.fetch_named("nick");
 					var ident = match_info.fetch_named("ident");
 					var host = match_info.fetch_named("host");
+					var user = new User(nick, ident, host);
 
-					userlist.insert(nick, new User(nick, ident, host));
+					userlist.insert(nick, user);
 
 					if (match_info.fetch_named("cmd") == "NICK") {
 						userlist.remove(match_info.fetch_named("oldnick"));
 					} else if (match_info.fetch_named("cmd") == "JOIN") {
-						irc.joined(match_info.fetch_named("channel"), match_info.fetch_named("nick"));
+						irc.joined(match_info.fetch_named("channel"), user);
 					}
 				}
 			} catch (Error e) {
@@ -119,7 +119,7 @@ namespace Foobot
 			try {
 				if (new Regex(":(?<nick>[^ ]+)!(?<ident>[^ ]+)@(?<host>[^ ]+) PRIVMSG (?<target>[^ ]+) :(?<text>.+)").match(line, 0, out match_info)) {
 					var nick = match_info.fetch_named("nick");
-					usr = userlist.lookup(nick);
+					var user = userlist.lookup(nick);
 					var target = match_info.fetch_named("target");
 					var text = match_info.fetch_named("text");
 					string channel;
@@ -131,7 +131,7 @@ namespace Foobot
 					else
 						channel = target;
 
-					irc.said(channel, nick, text);
+					irc.said(channel, user, text);
 
 					if (text[0:Settings.command_char.length] == Settings.command_char ||
 							channel == nick ||
@@ -147,7 +147,7 @@ namespace Foobot
 							var args = text.split(" ");
 							var cmd = args[0];
 							args = args[1:args.length];
-							Plugins.run_command(channel, nick, cmd, args);
+							Plugins.run_command(channel, user, cmd, args);
 							// TODO alias
 							// TODO forward query
 						}

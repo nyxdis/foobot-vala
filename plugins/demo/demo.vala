@@ -14,9 +14,9 @@ public class Demo : Object, Plugin {
 		register_command("ping");
 	}
 
-	public void ping(string channel, string nick)
+	public void ping(string channel, User user)
 	{
-		irc.say(channel, @"$nick: pong");
+		irc.say(channel, @"$(user.nick): pong");
 	}
 }
 

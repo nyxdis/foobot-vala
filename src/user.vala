@@ -61,6 +61,10 @@ namespace Foobot
 		 */
 		public User(string nick, string ident, string host)
 		{
+			this.nick = nick;
+			this.ident = ident;
+			this.host = host;
+
 			// db lookup
 		}
 

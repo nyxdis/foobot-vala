@@ -28,7 +28,7 @@ namespace Foobot
 		private bool registered;
 
 		private delegate Type RegisterPluginFunction();
-		private delegate void CommandCallback(Plugin self, string channel, string nick, string[] args);
+		private delegate void CommandCallback(Plugin self, string channel, User user, string[] args);
 
 		public PluginHandler(string name)
 		{
@@ -66,7 +66,7 @@ namespace Foobot
 			module = null;
 		}
 
-		public async void run_callback(string method, string channel, string nick, string[] _args)
+		public async void run_callback(string method, string channel, User user, string[] _args)
 		{
 			var symbol = type.name().down() + "_" + method;
 			var args = _args; // vala bug
@@ -75,7 +75,7 @@ namespace Foobot
 			module.symbol(symbol, out function);
 			var callback = (CommandCallback) function;
 			Thread.create<void*>(() => {
-				callback(plugin, channel, nick, args);
+				callback(plugin, channel, user, args);
 				return null;
 				}, false);
 			yield;
@@ -145,12 +145,12 @@ namespace Foobot
 			return true;
 		}
 
-		internal static void run_command(string channel, string nick, string cmd, string[] args)
+		internal static void run_command(string channel, User user, string cmd, string[] args)
 		{
 			foreach (var command in commands) {
 				if (command.trigger == cmd) {
 					var plugin = loaded.lookup(command.plugin);
-					plugin.run_callback.begin(command.method, channel, nick, args);
+					plugin.run_callback.begin(command.method, channel, user, args);
 				}
 			}
 		}
