@@ -33,6 +33,9 @@ namespace Foobot
 
 				// Connect
 				var client = new SocketClient();
+				client.tls = Settings.ssl;
+				client.tls_validation_flags = 0;
+
 				var conn = client.connect (new
 						InetSocketAddress(address,
 							Settings.port));

@@ -44,6 +44,11 @@ namespace Foobot
 		public static string server { get; private set; }
 
 		/**
+		 * Use a secure connection
+		 */
+		public static bool ssl { get; private set; }
+
+		/**
 		 * The IRC port, 6667 by default
 		 */
 		public static uint16 port { get; private set; }
@@ -143,6 +148,12 @@ namespace Foobot
 				debug_channel = get_string_if_exists("debug_channel");
 				main_channel = get_string_if_exists("main_channel");
 				listen_addr = get_string_if_exists("listen_addr");
+
+				if (config.has_key("foobot", "ssl"))
+					ssl = config.get_boolean("foobot",
+							"ssl");
+				else
+					ssl = false;
 
 				if (config.has_key("foobot", "port"))
 					port = (uint16) config.get_uint64("foobot", "port");
