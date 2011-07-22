@@ -66,14 +66,19 @@ namespace Foobot
 			module = null;
 		}
 
-		public void run_callback(string method, string channel, string nick, string[] args)
+		public async void run_callback(string method, string channel, string nick, string[] _args)
 		{
 			var symbol = type.name().down() + "_" + method;
+			var args = _args; // vala bug
 
 			void* function;
 			module.symbol(symbol, out function);
 			var callback = (CommandCallback) function;
-			callback(plugin, channel, nick, args);
+			Thread.create<void*>(() => {
+				callback(plugin, channel, nick, args);
+				return null;
+				}, false);
+			yield;
 		}
 	}
 
@@ -145,7 +150,7 @@ namespace Foobot
 			foreach (var command in commands) {
 				if (command.trigger == cmd) {
 					var plugin = loaded.lookup(command.plugin);
-					plugin.run_callback(command.method, channel, nick, args);
+					plugin.run_callback.begin(command.method, channel, nick, args);
 				}
 			}
 		}

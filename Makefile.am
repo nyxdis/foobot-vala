@@ -11,6 +11,7 @@ VALAFLAGS=--pkg gio-2.0 \
 	  --pkg gmodule-2.0 \
 	  --pkg libgda-4.0 \
 	  --pkg config \
+	  --thread \
 	  --vapidir $(top_srcdir)/vapi \
 	  -H $(top_srcdir)/include/foobot.h \
 	  --library=$(top_srcdir)/vapi/foobot \
