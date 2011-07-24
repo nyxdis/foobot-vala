@@ -138,7 +138,7 @@ namespace Foobot
 		/**
 		 * Get the id of the last inserted row
 		 * @param table table to query
-		 * @return insert id
+		 * @return insert id or -1 on error
 		 */
 		public int last_insert_id(string table)
 		{
@@ -148,8 +148,13 @@ namespace Foobot
 			b.select_order_by(b.add_id("_ROWID_"), false, null);
 			b.select_set_limit(b.add_expr(null, typeof(int), 1), 0);
 			var result = select_from_builder(b);
-			var value = result.get_value_at(0, 0);
-			return value.get_int();
+			try {
+				var value = result.get_value_at(0, 0);
+				return value.get_int();
+			} catch (Error e) {
+				stderr.printf("%s\n", e.message);
+				return -1;
+			}
 		}
 	}
 }
