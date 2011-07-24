@@ -7,6 +7,7 @@
 
 
 using Foobot;
+using Gda;
 
 public class Core : Object, Plugin {
 	public void init()
@@ -69,6 +70,29 @@ public class Core : Object, Plugin {
 
 	public void hi(string channel, User user)
 	{
+		try {
+			var users = db.select("SELECT COUNT(id) FROM USERS").get_value_at(0, 0).get_int();
+			if (users > 0)
+				return;
+		} catch (Error e) {
+			stderr.printf("%s\n", e.message);
+			return;
+		}
+
+		var b = new SqlBuilder(SqlStatementType.INSERT);
+		b.set_table("users");
+		b.add_field_value("username", typeof(string), user.nick);
+		b.add_field_value("ulvl", typeof(int), 1000);
+		db.exec_from_builder(b);
+
+		b = new SqlBuilder(SqlStatementType.INSERT);
+		b.set_table("hosts");
+		b.add_field_value("usrid", typeof(int), db.last_insert_id("users"));
+		b.add_field_value("ident", typeof(string), user.ident);
+		b.add_field_value("host", typeof(string), user.host);
+		db.exec_from_builder(b);
+
+		irc.say(channel, @"$(user.nick): Hi, you are now my owner, recognized by $(user.ident)@$(user.host).");
 	}
 
 	public void join(string channel, User user, string[] args)
