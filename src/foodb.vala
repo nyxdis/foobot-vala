@@ -45,7 +45,27 @@ namespace Foobot
 		public int exec(string sql)
 		{
 			try {
-				return execute_non_select_command(db, sql);
+				return db.execute_non_select_command(sql);
+			} catch (Error e) {
+				stderr.printf("%s\n", e.message);
+				return -1;
+			}
+		}
+
+		public int exec_from_builder(Gda.SqlBuilder b)
+		{
+			try {
+				return exec_from_stmt(b.get_statement());
+			} catch (Error e) {
+				stderr.printf("%s\n", e.message);
+				return -1;
+			}
+		}
+
+		public int exec_from_stmt(Gda.Statement stmt)
+		{
+			try {
+				return exec(stmt.to_sql_extended(db, null, StatementSqlFlag.PARAMS_SHORT, null));
 			} catch (Error e) {
 				stderr.printf("%s\n", e.message);
 				return -1;
