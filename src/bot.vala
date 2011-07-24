@@ -96,8 +96,8 @@ namespace Foobot
 			// Update userlist on JOIN, NICK and WHO events
 			try {
 				if (new Regex(@"^:[^ ]+ (?<cmd>352) $(Settings.nick) [^ ]+ (?<ident>[^ ]+) (?<host>[^ ]+) [^ ]+ (?<nick>[^ ]+) [^ ]+ :").match(line, 0, out match_info) ||
-						new Regex("^:(?<nick>.+)!(?<ident>.+)@(?<host>.+) (?<cmd>JOIN) :(?<channel>[^ ]+)").match(line, 0, out match_info) ||
-						new Regex("^:(?<oldnick>[^ ]+)!(?<ident>[^ ]+)@(?<host>[^ ]+) (?<cmd>NICK) :(?<nick>[^ ]+)").match(line, 0, out match_info)) {
+						new Regex("^:(?<nick>.+)!(?<ident>.+)@(?<host>.+) (?<cmd>JOIN) :(?<channel>[^ \r\n]+)").match(line, 0, out match_info) ||
+						new Regex("^:(?<oldnick>[^ ]+)!(?<ident>[^ ]+)@(?<host>[^ ]+) (?<cmd>NICK) :(?<nick>[^ \r\n]+)").match(line, 0, out match_info)) {
 					var nick = match_info.fetch_named("nick");
 					var ident = match_info.fetch_named("ident");
 					var host = match_info.fetch_named("host");
