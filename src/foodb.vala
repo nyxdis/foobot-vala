@@ -62,7 +62,7 @@ namespace Foobot
 
 		/**
 		 * Execute a non-select statement
-		 * @param b SqlBuilder object containing the query
+		 * @param b Gda.SqlBuilder object containing the query
 		 * @return number of rows affected or -1 on error
 		 */
 		public int exec_from_builder(Gda.SqlBuilder b)
@@ -77,7 +77,7 @@ namespace Foobot
 
 		/**
 		 * Execute a non-select statement
-		 * @param stmt Statement containing the query
+		 * @param stmt Gda.Statement containing the query
 		 * @return number of rows affected or -1 on error
 		 */
 		public int exec_from_stmt(Gda.Statement stmt)
@@ -87,6 +87,51 @@ namespace Foobot
 			} catch (Error e) {
 				stderr.printf("%s\n", e.message);
 				return -1;
+			}
+		}
+
+		/**
+		 * Execute a select statement
+		 * @param sql query string
+		 * @return Gda.DataModel containing the result or null on error
+		 */
+		public DataModel? select(string sql)
+		{
+			try {
+				return db.execute_select_command(sql);
+			} catch (Error e) {
+				stderr.printf("%s\n", e.message);
+				return null;
+			}
+		}
+
+		/**
+		 * Execute a select statement
+		 * @param b Gda.SqlBuilder object containing the query
+		 * @return Gda.DataModel containing the result or null on error
+		 */
+		public DataModel? select_from_builder(Gda.SqlBuilder b)
+		{
+			try {
+				return select_from_stmt(b.get_statement());
+			} catch (Error e) {
+				stderr.printf("%s\n", e.message);
+				return null;
+			}
+		}
+
+		/**
+		 * Execute a select statement
+		 * @param stmt Gda.Statement containing the query
+		 * @return Gda.DataModel containing the result or null on error
+		 */
+		public DataModel? select_from_stmt(Gda.Statement stmt)
+		{
+			try {
+				return select(stmt.to_sql_extended(db, null, StatementSqlFlag.PARAMS_SHORT, null));
+			} catch (Error e) {
+				stderr.printf("%s\n", e.message);
+				return null;
 			}
 		}
 	}
