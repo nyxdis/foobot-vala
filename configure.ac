@@ -17,13 +17,14 @@ plugindir="${libdir}/foobot"
 AC_SUBST(plugindir)
 
 GLIB_REQUIRED=2.12.0
+GDA_REQUIRED=4.2
 
 PKG_PROG_PKG_CONFIG([0.24])
 PKG_CHECK_MODULES(FOOBOT, glib-2.0 >= $GLIB_REQUIRED
 		  gmodule-2.0 >= $GLIB_REQUIRED
 		  gobject-2.0 >= $GLIB_REQUIRED
 		  gio-2.0 >= $GLIB_REQUIRED
-		  libgda-sqlite-4.0)
+		  libgda-sqlite-4.0 >= GDA_REQUIRED)
 
 AC_CONFIG_FILES([Makefile
 		 plugins/Makefile
