@@ -134,5 +134,22 @@ namespace Foobot
 				return null;
 			}
 		}
+
+		/**
+		 * Get the id of the last inserted row
+		 * @param table table to query
+		 * @return insert id
+		 */
+		public int last_insert_id(string table)
+		{
+			var b = new SqlBuilder(SqlStatementType.SELECT);
+			b.select_add_target(table, null);
+			b.add_field_value_id(b.add_id("_ROWID_"), 0);
+			b.select_order_by(b.add_id("_ROWID_"), false, null);
+			b.select_set_limit(b.add_expr(null, typeof(int), 1), 0);
+			var result = select_from_builder(b);
+			var value = result.get_value_at(0, 0);
+			return value.get_int();
+		}
 	}
 }
