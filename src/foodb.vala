@@ -11,6 +11,9 @@ using Gda;
 
 namespace Foobot
 {
+	/**
+	 * Database management
+	 */
 	public class Foodb : Object
 	{
 		private Connection db;
@@ -42,6 +45,11 @@ namespace Foobot
 			}
 		}
 
+		/**
+		 * Execute a non-select statement
+		 * @param sql query string
+		 * @return number of rows affected or -1 on error
+		 */
 		public int exec(string sql)
 		{
 			try {
@@ -52,6 +60,11 @@ namespace Foobot
 			}
 		}
 
+		/**
+		 * Execute a non-select statement
+		 * @param b SqlBuilder object containing the query
+		 * @return number of rows affected or -1 on error
+		 */
 		public int exec_from_builder(Gda.SqlBuilder b)
 		{
 			try {
@@ -62,6 +75,11 @@ namespace Foobot
 			}
 		}
 
+		/**
+		 * Execute a non-select statement
+		 * @param stmt Statement containing the query
+		 * @return number of rows affected or -1 on error
+		 */
 		public int exec_from_stmt(Gda.Statement stmt)
 		{
 			try {
