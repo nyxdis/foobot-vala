@@ -30,5 +30,6 @@ AC_CONFIG_FILES([Makefile
 		 plugins/Makefile
 		 plugins/core/Makefile
 		 plugins/demo/Makefile
+		 plugins/slogans/Makefile
 		 ])
 AC_OUTPUT

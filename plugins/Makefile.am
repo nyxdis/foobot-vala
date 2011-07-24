@@ -1,1 +1,4 @@
-SUBDIRS = core demo
+SUBDIRS = \
+	  core \
+	  demo \
+	  slogans
