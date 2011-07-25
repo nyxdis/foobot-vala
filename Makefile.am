@@ -1,5 +1,4 @@
 SUBDIRS = . plugins
-ACLOCAL_AMFLAGS = -I m4
 
 foobotincludedir = $(includedir)
 foobotinclude_HEADERS = include/foobot.h
@@ -30,3 +29,5 @@ foobot_SOURCES = src/main.vala \
 		 src/user.vala
 
 foobot_LDADD = $(FOOBOT_LIBS)
+
+include/foobot.h: foobot_vala.stamp
