@@ -176,6 +176,16 @@ public class Core : Object, Plugin {
 
 	public void whoami(string channel, User user)
 	{
+		string msg;
+		if (user.id > 0) {
+			msg = "You are ";
+			if (user.title != null)
+				msg += user.title + " ";
+			msg += user.name + ", level " + user.level.to_string();
+		} else {
+			msg = "You are unknown";
+		}
+		irc.say(channel, @"$(user.nick): $msg");
 	}
 
 	public void whois(string channel, User user, string[] args)
