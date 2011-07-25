@@ -95,6 +95,12 @@ public class Core : Object, Plugin {
 
 	public void join(string channel, User user, string[] args)
 	{
+		return_if_fail(args.length > 0);
+
+		if (args.length > 1)
+			irc.join(args[0], args[1]);
+		else
+			irc.join(args[0]);
 	}
 
 	public void load(string channel, User user, string[] args)
