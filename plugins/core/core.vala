@@ -172,6 +172,11 @@ public class Core : Object, Plugin {
 
 	public void who(string channel, User user, string[] args)
 	{
+		return_if_fail(args.length > 0);
+
+		var nick = args[0];
+		irc.send(@"WHO $nick");
+		irc.say(channel, @"$(user.nick): Okay");
 	}
 
 	public void whoami(string channel, User user)
