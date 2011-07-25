@@ -190,6 +190,20 @@ public class Core : Object, Plugin {
 
 	public void whois(string channel, User user, string[] args)
 	{
+		return_if_fail(args.length > 0);
+
+		var nick = args[0];
+		var tmpuser = bot.get_userlist(nick);
+		string msg;
+		if (tmpuser != null && tmpuser.id > 0) {
+			msg = tmpuser.nick + " is ";
+			if (tmpuser.title != null)
+				msg += tmpuser.title + " ";
+			msg += tmpuser.name + ", level " + tmpuser.level.to_string();
+		} else {
+			msg = nick + " is unknown";
+		}
+		irc.say(channel, @"$(user.nick): $msg");
 	}
 }
 
