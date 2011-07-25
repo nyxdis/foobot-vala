@@ -17,8 +17,6 @@ public class Core : Object, Plugin {
                 register_command("adduser", null, 100);
                 register_command("alias", null, 5);
                 register_command("chlvl", null, 100);
-                register_command("disable" , null, 10);
-                register_command("enable" , null, 10);
                 register_command("getuserdata", null, 10);
                 register_command("help");
                 register_command("hi", null, 0);
@@ -96,14 +94,6 @@ public class Core : Object, Plugin {
 	}
 
 	public void join(string channel, User user, string[] args)
-	{
-	}
-
-	public void enable(string channel, User user, string[] args)
-	{
-	}
-
-	public void disable(string channel, User user, string[] args)
 	{
 	}
 
