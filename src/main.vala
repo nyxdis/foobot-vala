@@ -20,6 +20,12 @@ namespace Foobot
 	 */
 	public Foodb db;
 
+	/**
+	 * Instance used to access bot data
+	 * @see Bot
+	 */
+	public Bot bot;
+
 	string config = null;
 	const OptionEntry[] options = {
 		{ "config-file", 'f', 0, OptionArg.FILENAME, ref config, "Path to an alternative configuration file", null },
@@ -30,7 +36,7 @@ namespace Foobot
 	{
 		var loop = new MainLoop();
 		var context = new OptionContext("");
-		var bot = new Bot();
+		bot = new Bot();
 
 		context.set_help_enabled(true);
 		context.add_main_entries(options, null);

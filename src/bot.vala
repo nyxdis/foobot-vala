@@ -10,17 +10,20 @@ using GLib;
 
 namespace Foobot
 {
-	class Bot : Object
+	/**
+	 * Internal bot data
+	 */
+	public class Bot : Object
 	{
 		private HashTable<string,User> userlist;
 
-		public Bot()
+		internal Bot()
 		{
 			userlist = new HashTable<string,User>(str_hash, str_equal);
 			irc = new IRC();
 		}
 
-		public bool irc_connect()
+		internal bool irc_connect()
 		{
 			log("Connecting");
 
@@ -62,7 +65,7 @@ namespace Foobot
 			return false;
 		}
 
-		public void irc_post_connect()
+		internal void irc_post_connect()
 		{
 			// TODO auth
 			// TODO join debug channel
@@ -75,7 +78,7 @@ namespace Foobot
 			print("log: %s\n", msg);
 		}
 
-		public async void wait()
+		internal async void wait()
 		{
 			try {
 				var line = yield istream.read_line_async();
@@ -86,7 +89,7 @@ namespace Foobot
 			wait();
 		}
 
-		public void parse(string line)
+		internal void parse(string line)
 		{
 			MatchInfo match_info;
 
@@ -156,6 +159,16 @@ namespace Foobot
 			} catch (Error e) {
 				warning("%s\n", e.message);
 			}
+		}
+
+		/**
+		 * Fetch an entry from the internal userlist
+		 * @param nick name of the entry
+		 * @return a #User object or null if there is no such entry
+		 */
+		public User? get_userlist(string nick)
+		{
+			return userlist.lookup(nick);
 		}
 	}
 }
