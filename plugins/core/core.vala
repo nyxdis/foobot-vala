@@ -123,6 +123,8 @@ public class Core : Object, Plugin {
 
 	public void raw(string channel, User user, string[] args)
 	{
+		var msg = string.joinv(" ", args);
+		irc.send(msg);
 	}
 
 	public void reboot(string channel, User user)
