@@ -91,7 +91,6 @@ namespace Foobot
 				name = user.get_value_at(1, 0).dup_string();
 				level = user.get_value_at(2, 0).get_int();
 				var title = user.get_value_at(3, 0);
-				debug(title.type().name());
 				if (title.holds(typeof(string)))
 					this.title = title.dup_string();
 				else
