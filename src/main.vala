@@ -32,9 +32,11 @@ namespace Foobot
 		{ null }
 	};
 
+	internal MainLoop loop;
+
 	int main(string[] args)
 	{
-		var loop = new MainLoop();
+		loop = new MainLoop();
 		var context = new OptionContext("");
 		bot = new Bot();
 

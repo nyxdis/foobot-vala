@@ -139,6 +139,7 @@ public class Core : Object, Plugin {
 
 	public void shutdown(string channel, User user)
 	{
+		bot.shutdown(@"Shutting down as requesetd by $(user.name)");
 	}
 
 	public void sql(string channel, User user, string[] args)

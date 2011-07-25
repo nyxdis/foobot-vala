@@ -170,5 +170,15 @@ namespace Foobot
 		{
 			return userlist.lookup(nick);
 		}
+
+		/**
+		 * Quit the bot, disconnecting from IRC
+		 * @param msg quit message on IRC
+		 */
+		public void shutdown(string msg)
+		{
+			irc.send(@"QUIT :$msg");
+			loop.quit();
+		}
 	}
 }
