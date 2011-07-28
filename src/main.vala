@@ -18,7 +18,7 @@ namespace Foobot
 	/**
 	 * Instance used for database access
 	 */
-	public Foodb db;
+	public SQLHeavy.Database db;
 
 	/**
 	 * Instance used to access bot data
@@ -51,7 +51,7 @@ namespace Foobot
 		if (!Settings.load(config))
 			return 1;
 
-		db = new Foodb();
+		Foodb.open();
 
 		Plugins.init();
 		Plugins.load("core");

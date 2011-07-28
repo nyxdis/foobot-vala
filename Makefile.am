@@ -8,7 +8,7 @@ AM_CPPFLAGS = $(FOOBOT_CFLAGS) \
 
 VALAFLAGS=--pkg gio-2.0 \
 	  --pkg gmodule-2.0 \
-	  --pkg libgda-4.0 \
+	  --pkg sqlheavy-0.1 \
 	  --pkg config \
 	  --thread \
 	  --vapidir $(top_srcdir)/vapi \
