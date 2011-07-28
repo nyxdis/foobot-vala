@@ -68,9 +68,21 @@ namespace Foobot
 		internal void irc_post_connect()
 		{
 			// TODO auth
-			// TODO join debug channel
-			// TODO join all channels
-			irc.join("#foobot");
+			if (Settings.debug_mode && Settings.debug_channel != null) {
+				var info = Settings.debug_channel.split(" ");
+				if (info[1] == null)
+					irc.join(info[0]);
+				else
+					irc.join(info[0], info[1]);
+			}
+
+			foreach (var channel in Settings.channels) {
+				var info = channel.split(" ");
+				if (info[1] == null)
+					irc.join(info[0]);
+				else
+					irc.join(info[0], info[1]);
+			}
 		}
 
 		private void log(string msg)
