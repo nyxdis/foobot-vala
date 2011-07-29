@@ -80,10 +80,10 @@ namespace Foobot
 				r[":host"] = host;
 				var user = r.execute();
 
-				id = user.fetch_int(user.field_index("id"));
-				name = user.fetch_string(user.field_index("username"));
-				level = user.fetch_int(user.field_index("ulvl"));
-				title = user.fetch_string(user.field_index("title"));
+				id = user.get_int("id");
+				name = user.get_string("username");
+				level = user.get_int("ulvl");
+				title = user.get_string("title");
 				// TODO userdata
 			} catch (Error e) {
 				stderr.printf("%s\n", e.message);
