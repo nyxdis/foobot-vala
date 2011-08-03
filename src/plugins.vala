@@ -28,7 +28,7 @@ namespace Foobot
 		private bool registered;
 
 		private delegate Type RegisterPluginFunction();
-		private delegate void CommandCallback(Plugin self, string channel, User user, string[] args);
+		private delegate string? CommandCallback(Plugin self, string channel, User user, string[] args);
 
 		public PluginHandler(string name)
 		{
@@ -76,7 +76,9 @@ namespace Foobot
 			var callback = (CommandCallback) function;
 			try {
 				Thread.create<void*>(() => {
-					callback(plugin, channel, user, args);
+					var response = callback(plugin, channel, user, args);
+					if (response != null)
+						irc.say(channel, response);
 					return null;
 					}, false);
 				yield;

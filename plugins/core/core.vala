@@ -36,12 +36,13 @@ public class Core : Object, Plugin {
                 register_command("whois");
 	}
 
-	public void ctcp_version(string channel)
+	public string? ctcp_version(string channel)
 	{
 		irc.send(@"NOTICE $channel :\001VERSION foobot v$(Foobot.Settings.version)\001");
+		return null;
 	}
 
-	public void addhost(string channel, User user, string[] args)
+	public string addhost(string channel, User user, string[] args)
 	{
 		int usrid;
 		string hostmask;
@@ -53,7 +54,7 @@ public class Core : Object, Plugin {
 				usrid = r.execute().fetch_int();
 			} catch (Error e) {
 				stderr.printf("%s\n", e.message);
-				return;
+				return "error";
 			}
 			hostmask = args[1];
 		} else {
@@ -61,10 +62,8 @@ public class Core : Object, Plugin {
 			hostmask = args[0];
 		}
 
-		if (!hostmask.contains("@")) {
-			irc.say(channel, @"$(user.nick): Invalid format, use addhost ident@host");
-			return;
-		}
+		if (!hostmask.contains("@"))
+			return "Invalid format, use addhost ident@host";
 
 		var hostdata = hostmask.split("@");
 
@@ -76,38 +75,43 @@ public class Core : Object, Plugin {
 			r.execute();
 		} catch (Error e) {
 			stderr.printf("%s\n", e.message);
-			return;
+			return "error";
 		}
 
-		irc.say(channel, @"$(user.nick): Added host");
+		return "Added host";
 	}
 
-	public void adduser(string channel, User user, string[] args)
+	public string? adduser(string channel, User user, string[] args)
 	{
+		return null;
 	}
 
-	public void alias(string channel, User user, string[] args)
+	public string? alias(string channel, User user, string[] args)
 	{
+		return null;
 	}
 
-	public void chlvl(string channel, User user, string[] args)
+	public string? chlvl(string channel, User user, string[] args)
 	{
+		return null;
 	}
 
-	public void getuserdata(string channel, User user, string[] args)
+	public string? getuserdata(string channel, User user, string[] args)
 	{
+		return null;
 	}
 
-	public void help(string channel, User user, string[] args)
+	public string? help(string channel, User user, string[] args)
 	{
+		return null;
 	}
 
-	public void hi(string channel, User user)
+	public string? hi(string channel, User user)
 	{
 		try {
 			var users = db.execute("SELECT COUNT(id) FROM users").fetch_int();
 			if (users > 0)
-				return;
+				return null;
 
 			var r = db.prepare("INSERT INTO users (username, ulvl) VALUES(:name, 1000);");
 			r[":name"] = user.nick;
@@ -120,14 +124,14 @@ public class Core : Object, Plugin {
 			r.execute();
 		} catch (Error e) {
 			stderr.printf("%s\n", e.message);
-			return;
+			return "error";
 		}
 
-		irc.say(channel, @"$(user.nick): Hi, you are now my owner, recognized by $(user.ident)@$(user.host).");
 		irc.send(@"WHO $(user.nick)");
+		return @"Hi, you are now my owner, recognized by $(user.ident)@$(user.host).";
 	}
 
-	public void join(string channel, User user, string[] args)
+	public string? join(string channel, User user, string[] args)
 	{
 		return_if_fail(args.length > 0);
 
@@ -135,84 +139,90 @@ public class Core : Object, Plugin {
 			irc.join(args[0], args[1]);
 		else
 			irc.join(args[0]);
+		return null;
 	}
 
-	public void load(string channel, User user, string[] args)
+	public string load(string channel, User user, string[] args)
 	{
 		var plugin = args[0];
 
 		if (Plugins.load(plugin))
-			irc.say(channel, @"$(user.nick): $plugin loaded");
+			return @"$plugin loaded";
 		else
-			irc.say(channel, @"$(user.nick): failed to load $plugin");
+			return @"failed to load $plugin";
 	}
 
-	public void merge(string channel, User user, string[] args)
+	public string? merge(string channel, User user, string[] args)
 	{
+		return null;
 	}
 
-	public void raw(string channel, User user, string[] args)
+	public string? raw(string channel, User user, string[] args)
 	{
 		var msg = string.joinv(" ", args);
 		irc.send(msg);
+		return null;
 	}
 
-	public void reboot(string channel, User user)
+	public string? reboot(string channel, User user)
 	{
+		return null;
 	}
 
-	public void reload(string channel, User user, string[] args)
+	public string reload(string channel, User user, string[] args)
 	{
 		var plugin = args[0];
 
 		if (Plugins.unload(plugin) && Plugins.load(plugin))
-			irc.say(channel, @"$(user.nick): $plugin reloaded");
+			return @"$plugin reloaded";
 		else
-			irc.say(channel, @"$(user.nick): failed to reload $plugin");
+			return @"failed to reload $plugin";
 	}
 
-	public void shutdown(string channel, User user)
+	public string? shutdown(string channel, User user)
 	{
 		bot.shutdown(@"Shutting down as requesetd by $(user.name)");
+		return null;
 	}
 
-	public void sql(string channel, User user, string[] args)
+	public string? sql(string channel, User user, string[] args)
 	{
+		return null;
 	}
 
-	public void unalias(string channel, User user, string[] args)
+	public string? unalias(string channel, User user, string[] args)
 	{
+		return null;
 	}
 
-	public void unload(string channel, User user, string[] args)
+	public string unload(string channel, User user, string[] args)
 	{
 		var plugin = args[0];
 
-		if (plugin.down() == "core") {
-			irc.say(channel, @"$(user.nick): not going to unload core");
-			return;
-		}
+		if (plugin.down() == "core")
+			return "not going to unload core";
 
 		if (Plugins.unload(plugin))
-			irc.say(channel, @"$(user.nick): $plugin unloaded");
+			return @"$plugin unloaded";
 		else
-			irc.say(channel, @"$(user.nick): failed to unload $plugin");
+			return @"failed to unload $plugin";
 	}
 
-	public void version(string channel, User user)
+	public string? version(string channel, User user)
 	{
+		return null;
 	}
 
-	public void who(string channel, User user, string[] args)
+	public string who(string channel, User user, string[] args)
 	{
 		return_if_fail(args.length > 0);
 
 		var nick = args[0];
 		irc.send(@"WHO $nick");
-		irc.say(channel, @"$(user.nick): Okay");
+		return "Okay";
 	}
 
-	public void whoami(string channel, User user)
+	public string whoami(string channel, User user)
 	{
 		string msg;
 		if (user.id > 0) {
@@ -223,10 +233,10 @@ public class Core : Object, Plugin {
 		} else {
 			msg = "You are unknown";
 		}
-		irc.say(channel, @"$(user.nick): $msg");
+		return msg;
 	}
 
-	public void whois(string channel, User user, string[] args)
+	public string whois(string channel, User user, string[] args)
 	{
 		return_if_fail(args.length > 0);
 
@@ -241,7 +251,7 @@ public class Core : Object, Plugin {
 		} else {
 			msg = nick + " is unknown";
 		}
-		irc.say(channel, @"$(user.nick): $msg");
+		return msg;
 	}
 }
 

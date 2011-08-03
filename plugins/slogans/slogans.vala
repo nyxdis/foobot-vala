@@ -95,23 +95,25 @@ public class Slogans : Object, Plugin {
 		irc.joined.connect(cornholio_join);
 	}
 
-	public void cornholio(string channel, User user)
+	public string cornholio(string channel, User user)
 	{
 		var idx = Random.int_range(0, cornholio_slogans.length - 1);
-		irc.say(channel, cornholio_slogans[idx]);
+		return cornholio_slogans[idx];
 	}
 
-	public void futurama(string channel, User user)
+	public string futurama(string channel, User user)
 	{
 		var idx = Random.int_range(0, futurama_slogans.length - 1);
-		irc.say(channel, futurama_slogans[idx]);
+		return futurama_slogans[idx];
 	}
 
-	public void cornholio_join(string channel, User user)
+	public string? cornholio_join(string channel, User user)
 	{
-		if (user.nick == Settings.nick) {
+		if (user.nick == Foobot.Settings.nick) {
 			var idx = Random.int_range(0, cornholio_slogans.length - 1);
-			irc.say(channel, cornholio_slogans[idx]);
+			return cornholio_slogans[idx];
+		} else {
+			return null;
 		}
 	}
 }
