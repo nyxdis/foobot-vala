@@ -42,20 +42,15 @@ public class Core : Object, Plugin {
 		return null;
 	}
 
-	public string addhost(string channel, User user, string[] args)
+	public string addhost(string channel, User user, string[] args) throws SQLHeavy.Error
 	{
 		int usrid;
 		string hostmask;
 
 		if (args.length > 1) {
-			try {
-				var r = db.prepare("SELECT id FROM users WHERE username=:name");
-				r[":name"] = args[0];
-				usrid = r.execute().fetch_int();
-			} catch (Error e) {
-				stderr.printf("%s\n", e.message);
-				return "error";
-			}
+			var r = db.prepare("SELECT id FROM users WHERE username=:name");
+			r[":name"] = args[0];
+			usrid = r.execute().fetch_int();
 			hostmask = args[1];
 		} else {
 			usrid = user.id;
@@ -67,16 +62,11 @@ public class Core : Object, Plugin {
 
 		var hostdata = hostmask.split("@");
 
-		try {
-			var r = db.prepare("INSERT INTO hosts VALUES(:id, :ident, :host)");
-			r[":id"] = usrid;
-			r[":ident"] = hostdata[0];
-			r[":host"] = hostdata[1];
-			r.execute();
-		} catch (Error e) {
-			stderr.printf("%s\n", e.message);
-			return "error";
-		}
+		var r = db.prepare("INSERT INTO hosts VALUES(:id, :ident, :host)");
+		r[":id"] = usrid;
+		r[":ident"] = hostdata[0];
+		r[":host"] = hostdata[1];
+		r.execute();
 
 		return "Added host";
 	}
@@ -106,26 +96,21 @@ public class Core : Object, Plugin {
 		return null;
 	}
 
-	public string? hi(string channel, User user)
+	public string? hi(string channel, User user, string[] args) throws SQLHeavy.Error
 	{
-		try {
-			var users = db.execute("SELECT COUNT(id) FROM users").fetch_int();
-			if (users > 0)
-				return null;
+		var users = db.execute("SELECT COUNT(id) FROM users").fetch_int();
+		if (users > 0)
+			return null;
 
-			var r = db.prepare("INSERT INTO users (username, ulvl) VALUES(:name, 1000);");
-			r[":name"] = user.nick;
-			var id = r.execute_insert();
+		var r = db.prepare("INSERT INTO users (username, ulvl) VALUES(:name, 1000);");
+		r[":name"] = user.nick;
+		var id = r.execute_insert();
 
-			r = db.prepare("INSERT INTO hosts VALUES(:id, :ident, :host);");
-			r[":id"] = id;
-			r[":ident"] = user.ident;
-			r[":host"] = user.host;
-			r.execute();
-		} catch (Error e) {
-			stderr.printf("%s\n", e.message);
-			return "error";
-		}
+		r = db.prepare("INSERT INTO hosts VALUES(:id, :ident, :host);");
+		r[":id"] = id;
+		r[":ident"] = user.ident;
+		r[":host"] = user.host;
+		r.execute();
 
 		irc.send(@"WHO $(user.nick)");
 		return @"Hi, you are now my owner, recognized by $(user.ident)@$(user.host).";

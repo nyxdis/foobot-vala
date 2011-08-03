@@ -192,5 +192,15 @@ namespace Foobot
 			irc.send(@"QUIT :$msg");
 			loop.quit();
 		}
+
+		internal void report_error(Error e)
+		{
+			string msg = "Plugin error: " + e.message;
+
+			if (Settings.debug_channel != null)
+				irc.say(Settings.debug_channel, msg);
+
+			log(msg);
+		}
 	}
 }

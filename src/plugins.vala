@@ -18,6 +18,10 @@ namespace Foobot
 		int level;
 	}
 
+	public errordomain PluginError {
+		FAILED
+	}
+
 	class PluginHandler : Object
 	{
 		public string path { get; private set; }
@@ -28,7 +32,8 @@ namespace Foobot
 		private bool registered;
 
 		private delegate Type RegisterPluginFunction();
-		private delegate string? CommandCallback(Plugin self, string channel, User user, string[] args);
+		[CCode (has_target = false)]
+		private delegate string? CommandCallback(Plugin self, string channel, User user, string[] args) throws Error;
 
 		public PluginHandler(string name)
 		{
@@ -76,7 +81,13 @@ namespace Foobot
 			var callback = (CommandCallback) function;
 			try {
 				Thread.create<void*>(() => {
-					var response = callback(plugin, channel, user, args);
+					string? response = null;
+					try {
+						response = callback(plugin, channel, user, args);
+					} catch (Error e) {
+						response = "Plugin threw an error";
+						bot.report_error(e);
+					}
 					if (response != null)
 						irc.say(channel, response);
 					return null;
