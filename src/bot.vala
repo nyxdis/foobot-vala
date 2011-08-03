@@ -59,7 +59,7 @@ namespace Foobot
 					}
 				}
 			} catch (Error e) {
-				stderr.printf("%s\n", e.message);
+				report_error(e);
 			}
 
 			return false;
@@ -85,7 +85,7 @@ namespace Foobot
 			}
 		}
 
-		private void log(string msg)
+		internal void log(string msg)
 		{
 			print("log: %s\n", msg);
 		}

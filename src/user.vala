@@ -86,7 +86,7 @@ namespace Foobot
 				title = user.get_string("title");
 				// TODO userdata
 			} catch (Error e) {
-				stderr.printf("%s\n", e.message);
+				bot.report_error(e);
 			}
 		}
 

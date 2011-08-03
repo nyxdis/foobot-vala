@@ -47,7 +47,7 @@ namespace Foobot
 
 			module = Module.open(path, ModuleFlags.BIND_LAZY);
 			if (module == null) {
-				stderr.printf("Failed to load module: %s\n", Module.error());
+				bot.log("Failed to load module: " + Module.error());
 				return false;
 			}
 
@@ -94,7 +94,7 @@ namespace Foobot
 					}, false);
 				yield;
 			} catch (Error e) {
-				stderr.printf("Failed to create plugin thread: %s", e.message);
+				bot.log("Failed to create plugin thread: " + e.message);
 			}
 		}
 	}

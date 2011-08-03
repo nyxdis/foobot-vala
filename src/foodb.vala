@@ -17,7 +17,7 @@ namespace Foobot.Foodb
 			db = new Database(@"foobot-$(Settings.network).db", FileMode.READ | FileMode.WRITE | FileMode.CREATE);
 			initialize();
 		} catch (SQLHeavy.Error e) {
-			stderr.printf("%s\n", e.message);
+			bot.report_error(e);
 		}
 	}
 

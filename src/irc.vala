@@ -64,7 +64,7 @@ namespace Foobot
 			try {
 				ostream.put_string(@"$raw\n");
 			} catch (Error e) {
-				stderr.printf("%s\n", e.message);
+				bot.report_error(e);
 			}
 		}
 
