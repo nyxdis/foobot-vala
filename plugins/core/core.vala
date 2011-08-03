@@ -43,6 +43,43 @@ public class Core : Object, Plugin {
 
 	public void addhost(string channel, User user, string[] args)
 	{
+		int usrid;
+		string hostmask;
+
+		if (args.length > 1) {
+			try {
+				var r = db.prepare("SELECT id FROM users WHERE username=:name");
+				r[":name"] = args[0];
+				usrid = r.execute().fetch_int();
+			} catch (Error e) {
+				stderr.printf("%s\n", e.message);
+				return;
+			}
+			hostmask = args[1];
+		} else {
+			usrid = user.id;
+			hostmask = args[0];
+		}
+
+		if (!hostmask.contains("@")) {
+			irc.say(channel, @"$(user.nick): Invalid format, use addhost ident@host");
+			return;
+		}
+
+		var hostdata = hostmask.split("@");
+
+		try {
+			var r = db.prepare("INSERT INTO hosts VALUES(:id, :ident, :host)");
+			r[":id"] = usrid;
+			r[":ident"] = hostdata[0];
+			r[":host"] = hostdata[1];
+			r.execute();
+		} catch (Error e) {
+			stderr.printf("%s\n", e.message);
+			return;
+		}
+
+		irc.say(channel, @"$(user.nick): Added host");
 	}
 
 	public void adduser(string channel, User user, string[] args)
