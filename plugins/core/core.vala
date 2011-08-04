@@ -71,9 +71,30 @@ public class Core : Object, Plugin {
 		return "Added host";
 	}
 
-	public string? adduser(string channel, User user, string[] args)
+	public string? adduser(string channel, User user, string[] args) throws SQLHeavy.Error
 	{
-		return null;
+		if (args.length == 0)
+			return null;
+
+		var nick = args[0];
+		var new_user = bot.get_userlist(nick);
+
+		if (new_user == null)
+			return "Unknown nick";
+
+		var r = db.prepare("INSERT INTO users (username, ulvl) VALUES(:name, 1)");
+		r[":name"] = nick;
+		var id = r.execute_insert();
+
+		r = db.prepare("INSERT INTO hosts VALUES(:id, :ident, :host)");
+		r[":id"] = id;
+		r[":ident"] = new_user.ident;
+		r[":host"] = new_user.host;
+		r.execute();
+
+		irc.send("WHO " + new_user.nick);
+
+		return @"Added user $id identified by $(new_user.ident)@$(new_user.host)";
 	}
 
 	public string? alias(string channel, User user, string[] args)
