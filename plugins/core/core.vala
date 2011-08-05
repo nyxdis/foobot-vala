@@ -162,9 +162,27 @@ public class Core : Object, Plugin {
 			return @"failed to load $plugin";
 	}
 
-	public string? merge(string channel, User user, string[] args)
+	public string merge(string channel, User user, string[] args) throws SQLHeavy.Error
 	{
-		return null;
+		if (args.length < 2)
+			return "Usage: merge username nickname";
+
+		var tmpusr = bot.get_userlist(args[1]);
+		if (tmpusr == null)
+			return "Unknown nick";
+
+		var r = db.prepare("SELECT id FROM users WHERE username LIKE :name");
+		r[":name"] = args[0];
+		var usrid = r.execute().fetch_int();
+		if (usrid == 0)
+			return "Unknown user";
+
+		r = db.prepare("INSERT INTO hosts VALUES(:id, :ident, :host)");
+		r[":id"] = usrid;
+		r[":ident"] = tmpusr.ident;
+		r[":host"] = tmpusr.host;
+		r.execute();
+		return "Users merged";
 	}
 
 	public string? raw(string channel, User user, string[] args)
