@@ -97,9 +97,13 @@ public class Core : Object, Plugin {
 		return @"Added user $id identified by $(new_user.ident)@$(new_user.host)";
 	}
 
-	public string? alias(string channel, User user, string[] args)
+	public string alias(string channel, User user, string[] args)
 	{
-		return null;
+		var alias = args[0].down();
+		var function = args[1].down();
+		var alias_args = args[2:args.length];
+		bot.register_alias(alias, function, alias_args);
+		return "Okay";
 	}
 
 	public string? chlvl(string channel, User user, string[] args)

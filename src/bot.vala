@@ -10,16 +10,24 @@ using GLib;
 
 namespace Foobot
 {
+	struct Alias {
+		string function;
+		string[]? args;
+		int64 id;
+	}
+
 	/**
 	 * Internal bot data
 	 */
 	public class Bot : Object
 	{
 		private HashTable<string,User> userlist;
+		private HashTable<string,Alias?> aliases;
 
 		internal Bot()
 		{
 			userlist = new HashTable<string,User>(str_hash, str_equal);
+			aliases = new HashTable<string,Alias?>(str_hash, str_equal);
 			irc = new IRC();
 		}
 
@@ -163,7 +171,12 @@ namespace Foobot
 							var cmd = args[0];
 							args = args[1:args.length];
 							Plugins.run_command(channel, user, cmd, args);
-							// TODO alias
+							var alias = aliases.lookup(cmd);
+							if (alias != null) {
+								var merged_args = string.joinv(" ", alias.args) + text;
+								var alias_args = merged_args.split(" ");
+								Plugins.run_command(channel, user, alias.function, alias_args);
+							}
 							// TODO forward query
 						}
 					}
@@ -201,6 +214,33 @@ namespace Foobot
 				irc.say(Settings.debug_channel, msg);
 
 			log(msg);
+		}
+
+		/**
+		 * Register a command alias
+		 */
+		public void register_alias(string alias, string _function, string[]? args = null, int64 id = 0)
+		{
+			var function = _function.down();
+
+			if (id == 0) {
+				try {
+					var r = db.prepare("INSERT INTO aliases (alias, function, args) VALUES(:alias, :function, :args)");
+					r[":alias"] = alias;
+					r[":function"] = function;
+					// TODO: serialize args and insert
+					r[":args"] = "";
+					id = r.execute_insert();
+				} catch (Error e) {
+					report_error(e);
+				}
+			}
+
+			var alias_data = Alias();
+			alias_data.function = function;
+			alias_data.args = args;
+			alias_data.id = id;
+			aliases.insert(alias, alias_data);
 		}
 	}
 }
