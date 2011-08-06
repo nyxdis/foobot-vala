@@ -79,5 +79,13 @@ namespace Foobot
 			// TODO line wrapping
 			send(@"PRIVMSG $target :$text");
 		}
+
+		/**
+		 * Send an action to the target
+		 */
+		public void act(string target, string text)
+		{
+			say(target, @"\001ACTION $text\001");
+		}
 	}
 }

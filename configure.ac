@@ -27,6 +27,7 @@ PKG_CHECK_MODULES(FOOBOT, glib-2.0 >= $GLIB_REQUIRED
 
 AC_CONFIG_FILES([Makefile
 		 plugins/Makefile
+		 plugins/bofh/Makefile
 		 plugins/core/Makefile
 		 plugins/demo/Makefile
 		 plugins/qalc/Makefile

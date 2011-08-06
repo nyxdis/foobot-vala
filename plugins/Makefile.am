@@ -1,4 +1,5 @@
 SUBDIRS = \
+	  bofh \
 	  core \
 	  demo \
 	  qalc \
