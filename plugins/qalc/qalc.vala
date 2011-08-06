@@ -14,17 +14,12 @@ public class Qalc : Object, Plugin {
 		register_command("qalc");
 	}
 
-	public string qalc(string channel, User user, string[] args)
+	public string qalc(string channel, User user, string[] args) throws SpawnError
 	{
-		try {
-			string result;
-			var cmdargs = string.joinv(" ", args);
-			Process.spawn_command_line_sync("/usr/bin/qalc " + cmdargs, out result);
-			return result;
-		} catch (Error e) {
-			stderr.printf("%s\n", e.message);
-			return null;
-		}
+		string result;
+		var cmdargs = string.joinv(" ", args);
+		Process.spawn_command_line_sync("/usr/bin/qalc " + cmdargs, out result);
+		return result;
 	}
 }
 
