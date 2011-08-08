@@ -107,13 +107,11 @@ public class Slogans : Object, Plugin {
 		return futurama_slogans[idx];
 	}
 
-	public string? cornholio_join(string channel, User user)
+	public void cornholio_join(string channel, User user)
 	{
 		if (user.nick == Foobot.Settings.nick) {
 			var idx = Random.int_range(0, cornholio_slogans.length - 1);
-			return cornholio_slogans[idx];
-		} else {
-			return null;
+			irc.say(channel, cornholio_slogans[idx]);
 		}
 	}
 }

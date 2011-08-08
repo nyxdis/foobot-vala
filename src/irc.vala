@@ -28,7 +28,7 @@ namespace Foobot
 		 * @param channel the joined channel
 		 * @param user who joined the channel
 		 */
-		public signal string? joined(string channel, User user);
+		public signal void joined(string channel, User user);
 
 		internal IRC() {}
 
@@ -39,7 +39,7 @@ namespace Foobot
 		 * @param user who said it
 		 * @param text what they said
 		 */
-		public signal string? said(string channel, User user, string text);
+		public signal void said(string channel, User user, string text);
 
 		/**
 		 * Join a new channel
