@@ -88,8 +88,10 @@ namespace Foobot
 						response = "Plugin threw an error";
 						bot.report_error(e);
 					}
-					if (response != null)
+					if (response != null) {
+						response = user.nick + ": " + response;
 						irc.say(channel, response);
+					}
 					return null;
 					}, false);
 				yield;
