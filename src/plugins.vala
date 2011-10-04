@@ -62,7 +62,11 @@ namespace Foobot
 			}
 
 			plugin = (Plugin) Object.new(type);
-			plugin.init();
+			try {
+				plugin.init();
+			} catch (Error e) {
+				bot.report_error(e);
+			}
 			return true;
 		}
 
@@ -198,7 +202,7 @@ namespace Foobot
 		 * Initialize the plugin, this is called immediately after
 		 * loading the plugin
 		 */
-		public abstract void init();
+		public abstract void init() throws Error;
 
 		/**
 		 * Use this function to register any new commands in the bot

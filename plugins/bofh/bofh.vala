@@ -9,18 +9,13 @@
 using Foobot;
 
 public class Bofh : Object, Plugin {
-	public void init()
+	public void init() throws Error
 	{
 		register_command("bofh");
 		register_command("addlart");
 		register_command("lart");
 
-		try {
-			db.execute("CREATE TABLE IF NOT EXISTS larts (lart varchar(50))");
-		} catch (Error e) {
-			// TODO
-			stderr.printf(@"Failed to create larts table: $(e.message)\n");
-		}
+		db.execute("CREATE TABLE IF NOT EXISTS larts (lart varchar(50))");
 	}
 
 	public string bofh() throws SpawnError
