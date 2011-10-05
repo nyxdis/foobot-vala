@@ -93,8 +93,10 @@ namespace Foobot
 						bot.report_error(e);
 					}
 					if (response != null) {
-						response = user.nick + ": " + response;
-						irc.say(channel, response);
+						var lines = response.split("\n");
+						foreach (var line in lines)
+							if (line.length > 0)
+								irc.say(channel, user.nick + ": " + line);
 					}
 					return null;
 					}, false);
