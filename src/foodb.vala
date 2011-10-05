@@ -16,6 +16,8 @@ namespace Foobot.Foodb
 		try {
 			db = new Database(@"foobot-$(Settings.network).db", FileMode.READ | FileMode.WRITE | FileMode.CREATE);
 			initialize();
+			// XXX: this is deprecated
+			db.count_changes = true;
 		} catch (SQLHeavy.Error e) {
 			bot.report_error(e);
 		}

@@ -4,5 +4,6 @@ SUBDIRS = \
 	  demo \
 	  eightball \
 	  qalc \
+	  quotes \
 	  slogans \
 	  snack

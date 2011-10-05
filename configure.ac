@@ -32,6 +32,7 @@ AC_CONFIG_FILES([Makefile
 		 plugins/demo/Makefile
 		 plugins/eightball/Makefile
 		 plugins/qalc/Makefile
+		 plugins/quotes/Makefile
 		 plugins/slogans/Makefile
 		 plugins/snack/Makefile
 		 ])
