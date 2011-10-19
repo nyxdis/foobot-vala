@@ -6,4 +6,5 @@ SUBDIRS = \
 	  qalc \
 	  quotes \
 	  slogans \
-	  snack
+	  snack \
+	  tvguide

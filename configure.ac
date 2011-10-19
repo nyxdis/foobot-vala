@@ -35,5 +35,6 @@ AC_CONFIG_FILES([Makefile
 		 plugins/quotes/Makefile
 		 plugins/slogans/Makefile
 		 plugins/snack/Makefile
+		 plugins/tvguide/Makefile
 		 ])
 AC_OUTPUT
