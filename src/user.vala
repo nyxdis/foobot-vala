@@ -84,7 +84,7 @@ namespace Foobot
 				name = user.get_string("username");
 				level = user.get_int("ulvl");
 				title = user.get_string("title");
-				// TODO userdata
+				userdata = new HashTable<string,string>(str_hash, str_equal); // TODO: populate
 			} catch (Error e) {
 				bot.report_error(e);
 			}
