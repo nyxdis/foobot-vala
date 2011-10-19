@@ -1,5 +1,5 @@
 /*
- * foobot - demo plugin
+ * foobot - quotes plugin
  *
  * Copyright (c) 2011, Christoph Mende <mende.christoph@gmail.com>
  * All rights reserved. Released under the 2-clause BSD license.
@@ -54,6 +54,8 @@ public class Quotes : Object, Plugin {
 
 	public string aq(string channel, User user, string[] args) throws Error
 	{
+		if (args.length == 0)
+			return "Add what?";
 		var quote = string.joinv(" ", args);
 		var r = db.prepare("INSERT INTO quotes (text, karma) VALUES(:quote, 0)");
 		r["quote"] = quote;
