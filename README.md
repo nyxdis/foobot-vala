@@ -11,5 +11,6 @@ Building foobot should be as simple as `./autogen.sh && make`. All dependencies 
 Dependencies
 ------------
 
-* [vala](http://live.gnome.org/vala) - 0.12.0 and up works, previous versions haven't been tested
-* [sqlite3](http://sqlite.org)
+* [>=vala-0.14](http://live.gnome.org/vala)
+* [sqlheavy](http://code.google.com/p/sqlheavy/)
+* [>=glib-2.26](http://www.gtk.org/)
