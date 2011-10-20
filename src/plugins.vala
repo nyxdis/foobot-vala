@@ -186,7 +186,7 @@ namespace Foobot
 			var command = Command();
 			command.trigger = trigger;
 			command.plugin = plugin.down();
-			command.method = method;
+			command.method = method.replace("-", "_");
 			command.level = level;
 			commands.append(command);
 		}
