@@ -76,7 +76,7 @@ public class Tvguide : Object, Plugin {
 			case "search":
 				args = args[1:args.length];
 				var keywords = string.joinv("%", args);
-				var r = tvdb.prepare("SELECT display_name, title, start FROM programme, channels WHERE channelid=id AND start>strftime('%s', 'now') AND title LIKE :keywords GROUP BY channelid ORDER BY start ASC LIMIT 3");
+				var r = tvdb.prepare("SELECT * FROM (SELECT channelid, display_name, title, start FROM programme, channels WHERE channelid=id AND start>strftime('%s', 'now') AND title LIKE :keywords ORDER BY start DESC) GROUP BY channelid ORDER BY start ASC LIMIT 3");
 				r["keywords"] = "%" + keywords + "%";
 				string match = "";
 				for (var programme = r.execute(); !programme.finished; programme.next()) {
