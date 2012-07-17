@@ -8,7 +8,7 @@
 
 using Foobot;
 
-public class Slogans : Object, Plugin {
+public class Slogans : Peas.ExtensionBase, Plugin {
 	string[] cornholio_slogans = { "Are you threatening me?",
                 "I AM THE GREAT CORNHOLIO!",
                 "Do you have TP?",
@@ -95,6 +95,17 @@ public class Slogans : Object, Plugin {
 		irc.joined.connect(cornholio_join);
 	}
 
+	public string? run(string method, string channel, User user, string[] args) {
+		switch (method) {
+			case "cornholio":
+				return cornholio(channel, user);
+			case "futurama":
+				return futurama(channel, user);
+			default:
+				return null;
+		}
+	}
+
 	public string cornholio(string channel, User user)
 	{
 		var idx = Random.int_range(0, cornholio_slogans.length - 1);
@@ -116,7 +127,8 @@ public class Slogans : Object, Plugin {
 	}
 }
 
-public Type register_plugin()
-{
-	return typeof(Slogans);
+[ModuleInit]
+public void peas_register_types(GLib.TypeModule module) {
+	var objmodule = module as Peas.ObjectModule;
+	objmodule.register_extension_type(typeof (Plugin), typeof (Slogans));
 }
