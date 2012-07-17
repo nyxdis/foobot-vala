@@ -114,31 +114,51 @@ namespace Foobot
 					});
 		}
 
+		private class PluginThread {
+			private Plugin plugin;
+			private string method;
+			private string channel;
+			private User user;
+			private string[] args;
+
+			public PluginThread(Plugin plugin, string method, string channel, User user, string[] args) {
+				this.plugin = plugin;
+				this.method = method;
+				this.channel = channel;
+				this.user = user;
+				this.args = args;
+			}
+
+			public void* thread_func() {
+				string? response = null;
+
+				try {
+					response = plugin.run(method, channel, user, args);
+				} catch (Error e) {
+					response = "Plugin threw an error";
+					warning(e.message);
+				}
+
+				if (response != null) {
+					var lines = response.split("\n");
+					foreach (var line in lines)
+						if (line.length > 0)
+							irc.say(channel, user.nick + ": " + line);
+				}
+
+				return null;
+			}
+		}
+
 		private async void run_callback(string plugin, string method, string channel, User user, string[] args)
 		{
 			var plugin_info = engine.get_plugin_info(plugin);
 			var exten = exten_set.get_extension(plugin_info) as Plugin;
 
+			var plugin_thread = new PluginThread(exten, method, channel, user, args);
+
 			try {
-				new Thread<void*>.try ("plugin_thread", () => {
-						string? response = null;
-
-						try {
-							response = exten.run(method, channel, user, args);
-						} catch (Error e) {
-							response = "Plugin threw an error";
-							warning(e.message);
-						}
-
-						if (response != null) {
-							var lines = response.split("\n");
-							foreach (var line in lines)
-								if (line.length > 0)
-									irc.say(channel, user.nick + ": " + line);
-						}
-
-						return null;
-						});
+				new Thread<void*>.try ("plugin_thread", plugin_thread.thread_func);
 				yield;
 			} catch (Error e) {
 				bot.log("Failed to create plugin thread: " + e.message);
