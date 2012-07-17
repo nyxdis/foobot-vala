@@ -8,10 +8,19 @@
 
 using Foobot;
 
-public class Qalc : Object, Plugin {
+public class Qalc : Peas.ExtensionBase, Plugin {
 	public void init()
 	{
 		register_command("qalc");
+	}
+
+	public string? run(string method, string channel, User user, string[] args) {
+		switch (method) {
+			case "qalc":
+				return qalc(channel, user, args);
+			default:
+				return null;
+		}
 	}
 
 	public string qalc(string channel, User user, string[] args) throws SpawnError
@@ -23,7 +32,8 @@ public class Qalc : Object, Plugin {
 	}
 }
 
-public Type register_plugin()
-{
-	return typeof(Qalc);
+[ModuleInit]
+public void peas_register_types(GLib.TypeModule module) {
+	var objmodule = module as Peas.ObjectModule;
+	objmodule.register_extension_type(typeof (Plugin), typeof (Qalc));
 }

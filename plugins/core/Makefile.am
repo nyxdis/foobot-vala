@@ -5,6 +5,4 @@ libcore_la_SOURCES = core.vala
 
 plugin_DATA = core.plugin
 
-EXTRA_DIST = $(plugin_DATA)
-
 include ../plugins.mk
