@@ -23,6 +23,7 @@ namespace Foobot
 	{
 		private HashTable<string,User> userlist;
 		private HashTable<string,Alias?> aliases;
+		private SocketConnection conn;
 
 		internal Bot()
 		{
@@ -46,7 +47,7 @@ namespace Foobot
 				client.tls = Settings.ssl;
 				client.tls_validation_flags = 0;
 
-				var conn = client.connect (new
+				conn = client.connect (new
 						InetSocketAddress(address,
 							Settings.port));
 				istream = new DataInputStream(conn.input_stream);
@@ -104,7 +105,7 @@ namespace Foobot
 				var line = yield istream.read_line_async();
 				parse(line);
 			} catch (Error e) {
-				warning("%s\n", e.message);
+				warning(e.message);
 			}
 			wait();
 		}
@@ -112,6 +113,11 @@ namespace Foobot
 		internal void parse(string line)
 		{
 			MatchInfo match_info;
+
+			if (line.has_prefix("ERROR :")) {
+				warning(line);
+				return;
+			}
 
 			if (line.has_prefix("PING :"))
 				irc.send(@"PONG :$(line[6:line.length])");
@@ -135,7 +141,7 @@ namespace Foobot
 					}
 				}
 			} catch (Error e) {
-				warning("%s\n", e.message);
+				warning(e.message);
 			}
 
 			// Parse PRIVMSG
@@ -182,7 +188,7 @@ namespace Foobot
 					}
 				}
 			} catch (Error e) {
-				warning("%s\n", e.message);
+				warning(e.message);
 			}
 		}
 
