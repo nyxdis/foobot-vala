@@ -8,7 +8,7 @@
 
 using Foobot;
 
-public class Quotes : Object, Plugin {
+public class Quotes : Peas.ExtensionBase, Plugin {
 	public void init() throws Error
 	{
 		register_command("2q", "pub_2q");
@@ -20,6 +20,27 @@ public class Quotes : Object, Plugin {
 		register_command("tq");
 
 		db.execute("CREATE TABLE IF NOT EXISTS quotes (id integer primary key, text text, karma int)");
+	}
+
+	public string? run(string method, string channel, User user, string[] args) {
+		switch (method) {
+			case "2q":
+				return pub_2q(channel, user, args);
+			case "q":
+				return q(channel, user, args);
+			case "aq":
+				return aq(channel, user, args);
+			case "dq":
+				return dq(channel, user, args);
+			case "iq":
+				return iq(channel, user, args);
+			case "sq":
+				return sq(channel, user, args);
+			case "tq":
+				return tq(channel, user, args);
+			default:
+				return null;
+		}
 	}
 
 	public string pub_2q(string channel, User user, string[] args) throws Error
@@ -131,7 +152,8 @@ public class Quotes : Object, Plugin {
 	}
 }
 
-public Type register_plugin()
-{
-	return typeof(Quotes);
+[ModuleInit]
+public void peas_register_types(GLib.TypeModule module) {
+	var objmodule = module as Peas.ObjectModule;
+	objmodule.register_extension_type(typeof (Plugin), typeof (Quotes));
 }
