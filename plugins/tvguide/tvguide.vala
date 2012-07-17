@@ -9,10 +9,19 @@
 using Foobot;
 using SQLHeavy;
 
-public class Tvguide : Object, Plugin {
+public class Tvguide : Peas.ExtensionBase, Plugin {
 	public void init()
 	{
 		register_command("tv");
+	}
+
+	public string? run(string method, string channel, User user, string[] args) {
+		switch (method) {
+			case "tv":
+				return tv(channel, user, args);
+			default:
+				return null;
+		}
 	}
 
 	public string? tv(string channel, User user, string[] args) throws GLib.Error
@@ -167,7 +176,8 @@ public class Tvguide : Object, Plugin {
 	}
 }
 
-public Type register_plugin()
-{
-	return typeof(Tvguide);
+[ModuleInit]
+public void peas_register_types(GLib.TypeModule module) {
+	var objmodule = module as Peas.ObjectModule;
+	objmodule.register_extension_type(typeof (Plugin), typeof (Tvguide));
 }
