@@ -8,19 +8,30 @@
 
 using Foobot;
 
-public class Demo : Object, Plugin {
+public class Demo : Peas.ExtensionBase, Plugin {
 	public void init()
 	{
 		register_command("ping");
 	}
 
-	public string ping(string channel, User user)
+	public string? run(string method, string channel, User user, string[] args) {
+		switch (method) {
+			case "ping":
+				return ping();
+			default:
+				return null;
+		}
+	}
+
+	public string ping()
 	{
 		return "pong";
 	}
 }
 
-public Type register_plugin()
+[ModuleInit]
+public void peas_register_types(GLib.TypeModule module)
 {
-	return typeof(Demo);
+	var objmodule = module as Peas.ObjectModule;
+	objmodule.register_extension_type(typeof (Plugin), typeof (Demo));
 }

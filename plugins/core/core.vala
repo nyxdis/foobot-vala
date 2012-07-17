@@ -8,7 +8,7 @@
 
 using Foobot;
 
-public class Core : Object, Plugin {
+public class Core : Peas.ExtensionBase, Plugin {
 	public void init()
 	{
 		register_command("\001VERSION\001", "ctcp_version");
@@ -34,6 +34,59 @@ public class Core : Object, Plugin {
                 register_command("who");
                 register_command("whoami", null, 0);
                 register_command("whois");
+	}
+
+	public string? run (string method, string channel, User user, string[] args) throws GLib.Error {
+		switch (method) {
+			case "ctcp_version":
+				return ctcp_version(channel);
+			case "addhost":
+				return addhost(channel, user, args);
+			case "adduser":
+				return adduser(channel, user, args);
+			case "alias":
+				return alias(channel, user, args);
+			case "chlvl":
+				return chlvl(channel, user, args);
+			case "getuserdata":
+				return getuserdata(channel, user, args);
+			case "help":
+				return help(channel, user, args);
+			case "hi":
+				return hi(channel, user, args);
+			case "join":
+				return join(channel, user, args);
+			case "load":
+				return load(channel, user, args);
+			case "merge":
+				return merge(channel, user, args);
+			case "raw":
+				return raw(channel, user, args);
+			case "reboot":
+				return reboot(channel, user);
+			case "reload":
+				return reload(channel, user, args);
+			case "shutdown":
+				return shutdown(channel, user);
+			case "sql":
+				return sql(channel, user, args);
+			case "unalias":
+				return unalias(channel, user, args);
+			case "unload":
+				return unload(channel, user, args);
+			case "update":
+				return update();
+			case "version":
+				return version(channel, user);
+			case "who":
+				return who(channel, user, args);
+			case "whoami":
+				return whoami(channel, user);
+			case "whois":
+				return whois(channel, user, args);
+			default:
+				return null;
+		}
 	}
 
 	public string? ctcp_version(string channel)
@@ -108,16 +161,19 @@ public class Core : Object, Plugin {
 
 	public string? chlvl(string channel, User user, string[] args)
 	{
+		// TODO
 		return null;
 	}
 
 	public string? getuserdata(string channel, User user, string[] args)
 	{
+		// TODO
 		return null;
 	}
 
 	public string? help(string channel, User user, string[] args)
 	{
+		// TODO
 		return null;
 	}
 
@@ -194,6 +250,7 @@ public class Core : Object, Plugin {
 
 	public string? reboot(string channel, User user)
 	{
+		// TODO
 		return null;
 	}
 
@@ -215,11 +272,13 @@ public class Core : Object, Plugin {
 
 	public string? sql(string channel, User user, string[] args)
 	{
+		// TODO
 		return null;
 	}
 
 	public string? unalias(string channel, User user, string[] args)
 	{
+		// TODO
 		return null;
 	}
 
@@ -236,8 +295,15 @@ public class Core : Object, Plugin {
 			return @"failed to unload $plugin";
 	}
 
+	public string? update()
+	{
+		// TODO
+		return null;
+	}
+
 	public string? version(string channel, User user)
 	{
+		// TODO
 		return null;
 	}
 
@@ -283,7 +349,9 @@ public class Core : Object, Plugin {
 	}
 }
 
-public Type register_plugin()
+[ModuleInit]
+public void peas_register_types(GLib.TypeModule module)
 {
-	return typeof(Core);
+	var objmodule = module as Peas.ObjectModule;
+	objmodule.register_extension_type(typeof (Plugin), typeof (Core));
 }

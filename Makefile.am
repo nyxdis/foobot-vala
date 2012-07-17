@@ -8,8 +8,10 @@ AM_CPPFLAGS = $(FOOBOT_CFLAGS) \
 
 VALAFLAGS=--pkg gio-2.0 \
 	  --pkg gmodule-2.0 \
+	  --pkg libpeas-1.0 \
 	  --pkg sqlheavy-0.1 \
 	  --pkg config \
+	  --target-glib=2.32 \
 	  --thread \
 	  --vapidir $(top_srcdir)/vapi \
 	  -H $(top_srcdir)/include/foobot.h \

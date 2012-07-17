@@ -11,7 +11,7 @@ using Config;
 
 namespace Foobot
 {
-	struct Command {
+	private struct Command {
 		string trigger;
 		string plugin;
 		string method;
@@ -22,104 +22,22 @@ namespace Foobot
 		FAILED
 	}
 
-	class PluginHandler : Object
-	{
-		public string path { get; private set; }
-
-		private Type type;
-		private Module module;
-		private Plugin plugin;
-		private bool registered;
-
-		private delegate Type RegisterPluginFunction();
-		[CCode (has_target = false)]
-		private delegate string? CommandCallback(Plugin self, string channel, User user, string[] args) throws Error;
-
-		public PluginHandler(string name)
-		{
-			path = Module.build_path(PLUGINDIR, name);
-			registered = false;
-		}
-
-		public bool load()
-		{
-			stdout.printf("Loading plugin: %s\n", path);
-
-			module = Module.open(path, ModuleFlags.BIND_LAZY);
-			if (module == null) {
-				bot.log("Failed to load module: " + Module.error());
-				return false;
-			}
-
-			stdout.printf("Loaded module: %s\n", module.name());
-
-			if (!registered) {
-				void* function;
-				module.symbol("register_plugin", out function);
-				RegisterPluginFunction register_plugin = (RegisterPluginFunction) function;
-				type = register_plugin();
-				registered = true;
-			}
-
-			plugin = (Plugin) Object.new(type);
-			try {
-				plugin.init();
-			} catch (Error e) {
-				bot.report_error(e);
-			}
-			return true;
-		}
-
-		public void unload()
-		{
-			module = null;
-		}
-
-		public async void run_callback(string method, string channel, User user, string[] _args)
-		{
-			var symbol = type.name().down() + "_" + method;
-			var args = _args; // vala bug
-
-			void* function;
-			module.symbol(symbol, out function);
-			var callback = (CommandCallback) function;
-			try {
-				Thread.create<void*>(() => {
-					string? response = null;
-					try {
-						response = callback(plugin, channel, user, args);
-					} catch (Error e) {
-						response = "Plugin threw an error";
-						bot.report_error(e);
-					}
-					if (response != null) {
-						var lines = response.split("\n");
-						foreach (var line in lines)
-							if (line.length > 0)
-								irc.say(channel, user.nick + ": " + line);
-					}
-					return null;
-					}, false);
-				yield;
-			} catch (Error e) {
-				bot.log("Failed to create plugin thread: " + e.message);
-			}
-		}
-	}
-
 	/**
 	 * Plugin management
 	 **/
-	public class Plugins : Object
+	namespace Plugins
 	{
-		private static HashTable<string,PluginHandler> loaded;
-		private static SList<Command?> commands;
+		private Peas.Engine engine;
+		private Peas.ExtensionSet exten_set;
+		private SList<Command?> commands;
 
-		private Plugins() {}
-
-		internal static void init()
+		internal void init()
 		{
-			loaded = new HashTable<string,PluginHandler>(str_hash, str_equal);
+			engine = Peas.Engine.get_default();
+			engine.add_search_path(Config.PLUGINDIR, null);
+			exten_set = new Peas.ExtensionSet(engine, typeof (Plugin));
+			exten_set.extension_added.connect(on_extension_added);
+			exten_set.extension_removed.connect(on_extension_removed);
 		}
 
 		/**
@@ -127,68 +45,104 @@ namespace Foobot
 		 *
 		 * @param name the filename of the plugin without "lib" suffix
 		 * and file extension
-		 * @return wether the plugin was loaded successfully
+		 * @return whether the plugin was loaded successfully
 		 */
-		public static bool load(string name)
+		public bool load(string name)
 		{
-			PluginHandler handler = loaded.lookup(name);
+			var plugin_info = engine.get_plugin_info(name);
 
-			if (handler == null) {
-				handler = new PluginHandler(name);
-				loaded.insert(name, handler);
+			if (plugin_info == null) {
+				warning(@"Plugin $name not found");
+				return false;
 			}
 
-			if (!handler.load())
-				return false;
-
-			return true;
+			return engine.try_load_plugin(plugin_info);
 		}
 
 		/**
-		 * Unload a plugin
+		 * Unload a plugin by name
 		 *
-		 * This function unregisters any commands used in the plugin
-		 * and unloads it
-		 *
-		 * @param _name name of the plugin
-		 * @return false if the plugin is not loaded
+		 * @param name name of the plugin
+		 * @return whether the plugin was unloaded successfully
 		 */
-		public static bool unload(string _name)
+		public bool unload(string name)
 		{
-			var name = _name.down();
+			var plugin_info = engine.get_plugin_info(name);
 
-			var handler = loaded.lookup(name);
-			if (handler == null)
+			if (plugin_info == null) {
+				warning(@"Plugin $name not found");
 				return false;
+			}
 
-			commands.foreach((data) => {
-					if (data.plugin == name)
-						commands.remove(data);
-					});
-
-			handler.unload();
-			return true;
+			return engine.try_unload_plugin(plugin_info);
 		}
 
-		internal static void run_command(string channel, User user, string cmd, string[] args)
+		internal void run_command(string channel, User user, string cmd, string[] args)
 		{
 			foreach (var command in commands) {
 				if (command.trigger == cmd) {
-					var plugin = loaded.lookup(command.plugin);
 					if (user.level >= command.level)
-						plugin.run_callback.begin(command.method, channel, user, args);
+						run_callback.begin(command.plugin, command.method, channel, user, args);
 				}
 			}
 		}
 
-		internal static void register_command(string trigger, string plugin, string method, int level)
+		internal void register_command(string trigger, string plugin, string method, int level)
 		{
 			var command = Command();
 			command.trigger = trigger;
-			command.plugin = plugin.down();
+			command.plugin = plugin;
 			command.method = method.replace("-", "_");
 			command.level = level;
 			commands.append(command);
+		}
+
+		private void on_extension_added(Peas.ExtensionSet extension_set, Peas.PluginInfo info, GLib.Object exten) {
+			var plugin = exten as Plugin;
+
+			try {
+				plugin.init();
+			} catch (Error e) {
+				warning(e.message);
+			}
+		}
+
+		private void on_extension_removed(Peas.ExtensionSet extension_set, Peas.PluginInfo info, GLib.Object exten) {
+			commands.foreach((data) => {
+					if (data.plugin == info.get_module_name())
+						commands.remove(data);
+					});
+		}
+
+		private async void run_callback(string plugin, string method, string channel, User user, string[] args)
+		{
+			var plugin_info = engine.get_plugin_info(plugin);
+			var exten = exten_set.get_extension(plugin_info) as Plugin;
+
+			try {
+				new Thread<void*>.try ("plugin_thread", () => {
+						string? response = null;
+
+						try {
+							response = exten.run(method, channel, user, args);
+						} catch (Error e) {
+							response = "Plugin threw an error";
+							warning(e.message);
+						}
+
+						if (response != null) {
+							var lines = response.split("\n");
+							foreach (var line in lines)
+								if (line.length > 0)
+									irc.say(channel, user.nick + ": " + line);
+						}
+
+						return null;
+						});
+				yield;
+			} catch (Error e) {
+				bot.log("Failed to create plugin thread: " + e.message);
+			}
 		}
 	}
 
@@ -198,7 +152,7 @@ namespace Foobot
 	 * Plugins have to inherit this class and they have to define their own
 	 * init function.
 	 */
-	public interface Plugin : Object
+	public interface Plugin : Peas.ExtensionBase
 	{
 		/**
 		 * Initialize the plugin, this is called immediately after
@@ -209,20 +163,30 @@ namespace Foobot
 		/**
 		 * Use this function to register any new commands in the bot
 		 *
-		 * @param command trigger for the command, without command char
+		 * @param trigger trigger for the command, without command char
 		 * @param method method to call when the command is triggered
 		 * or null if it is the same as the trigger
 		 * @param level required level for the function
 		 */
-		protected void register_command(string command, string? method = null, int level = 1)
+		protected void register_command(string trigger, string? method = null, int level = 1)
 		{
-			var type = Type.from_instance(this);
-			var plugin = type.name();
+			var plugin_info = get_plugin_info();
+			var plugin = plugin_info.get_module_name();
 
 			if (method == null)
-				method = command;
+				method = trigger;
 
-			Plugins.register_command(command, plugin, method, level);
+			Plugins.register_command(trigger, plugin, method, level);
 		}
+
+		/**
+		 * Call a method on the plugin
+		 *
+		 * @param method the plugin's method to be called
+		 * @param channel where the event happened
+		 * @param user who executed the command
+		 * @param args arguments to the command
+		 */
+		public abstract string? run(string method, string channel, User user, string[] args) throws Error;
 	}
 }

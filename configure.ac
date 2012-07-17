@@ -23,6 +23,7 @@ PKG_CHECK_MODULES(FOOBOT, glib-2.0 >= $GLIB_REQUIRED
 		  gmodule-2.0 >= $GLIB_REQUIRED
 		  gobject-2.0 >= $GLIB_REQUIRED
 		  gio-2.0 >= $GLIB_REQUIRED
+		  libpeas-1.0
 		  sqlheavy-0.1)
 
 AC_CONFIG_FILES([Makefile
