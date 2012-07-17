@@ -8,11 +8,22 @@
 
 using Foobot;
 
-public class Eightball : Object, Plugin {
+public class Eightball : Peas.ExtensionBase, Plugin {
 	public void init()
 	{
 		register_command("8ball", "eightball");
 		register_command("decide");
+	}
+
+	public string? run(string method, string channel, User user, string[] args) {
+		switch (method) {
+			case "eightball":
+				return eightball();
+			case "decide":
+				return decide(channel, user, args);
+			default:
+				return null;
+		}
 	}
 
 	public string eightball()
@@ -53,7 +64,8 @@ public class Eightball : Object, Plugin {
 	}
 }
 
-public Type register_plugin()
-{
-	return typeof(Eightball);
+[ModuleInit]
+public void peas_register_types(GLib.TypeModule module) {
+	var objmodule = module as Peas.ObjectModule;
+	objmodule.register_extension_type(typeof (Plugin), typeof (Eightball));
 }
