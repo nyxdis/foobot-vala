@@ -8,7 +8,7 @@
 
 using Foobot;
 
-public class Bofh : Object, Plugin {
+public class Bofh : Peas.ExtensionBase, Plugin {
 	public void init() throws Error
 	{
 		register_command("bofh");
@@ -16,6 +16,19 @@ public class Bofh : Object, Plugin {
 		register_command("lart");
 
 		db.execute("CREATE TABLE IF NOT EXISTS larts (lart varchar(50))");
+	}
+
+	public string? run(string method, string channel, User user, string[] args) throws Error {
+		switch (method) {
+			case "bofh":
+				return bofh();
+			case "addlart":
+				return addlart(channel, user, args);
+			case "lart":
+				return lart(channel, user, args);
+			default:
+				return null;
+		}
 	}
 
 	public string bofh() throws SpawnError
@@ -48,7 +61,8 @@ public class Bofh : Object, Plugin {
 	}
 }
 
-public Type register_plugin()
-{
-	return typeof(Bofh);
+[ModuleInit]
+public void peas_register_types(GLib.TypeModule module) {
+	var objmodule = module as Peas.ObjectModule;
+	objmodule.register_extension_type(typeof (Plugin), typeof (Bofh));
 }
